@@ -6,7 +6,7 @@ export type Entry = {
   calories: number;
   protein?: number;
   carbs?: number;
-  fat?: number;
+  fats?: number;
 };
 
 export type DayLog = Record<Meal, Entry[]>;

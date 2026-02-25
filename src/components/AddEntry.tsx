@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Meal } from "@/types";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import { error } from "console";
+import InputField from "./common/InputField";
 
 type Props = Readonly<{
   meal: Meal;
@@ -50,46 +51,20 @@ export default function AddEntry({ meal, onClose }: Props) {
           onClose();
         }}
       >
-        <div>
-          <label
-            htmlFor="food-name"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Food name <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="food-name"
-            type="text"
-            value={foodName}
-            onChange={(e) => setFoodName(e.target.value)}
-            placeholder="e.g. Chicken breast"
-            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {errors.foodName && (
-            <p className="mt-1 text-xs text-red-500">{errors.foodName}</p>
-          )}
-        </div>
-
-        <div>
-          <label
-            htmlFor="food-calories"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Calories (kcal) <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="food-calories"
-            type="number"
-            value={calories}
-            onChange={(e) => setCalories(e.target.valueAsNumber)}
-            placeholder="e.g. 250"
-            min={1}
-            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {errors.calories && (
-            <p className="mt-1 text-xs text-red-500">{errors.calories}</p>
-          )}
-        </div>
+        <InputField
+          label="Food name"
+          onChange={(name) => setFoodName(name)}
+          value={foodName}
+          error={errors.foodName}
+          placeholder="e.g. Chicken breast"
+        />
+        <InputField
+          label="Calories (kcal)"
+          onChange={(name) => setCalories(name)}
+          value={calories}
+          error={errors.calories}
+          placeholder="e.g. 250"
+        />
 
         <div className="flex gap-2 pt-1">
           <button

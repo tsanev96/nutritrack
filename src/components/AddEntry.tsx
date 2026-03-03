@@ -3,8 +3,8 @@
 import { useState } from "react";
 import type { Meal } from "@/types";
 import { useTrackerStore } from "@/store/useTrackerStore";
-import { error } from "console";
 import InputField from "./common/InputField";
+import { calcCalories } from "@/utils/calculateCalories";
 
 type Props = Readonly<{
   meal: Meal;
@@ -14,30 +14,28 @@ type Props = Readonly<{
 export default function AddEntry({ meal, onClose }: Props) {
   const addEntry = useTrackerStore((s) => s.addEntry);
   const [foodName, setFoodName] = useState("");
-  const [calories, setCalories] = useState(0);
-  const [errors, setErrors] = useState<{
-    foodName?: string;
-    calories?: string;
-  }>({});
+  const [macros, setMacros] = useState({ fats: 0, protein: 0, carbs: 0 });
+  const [errors, setErrors] = useState<{ foodName?: string }>({});
+
+  const totalCalories = calcCalories(macros);
+
+  function setMacro(key: keyof typeof macros) {
+    return (val: number | string) =>
+      setMacros((prev) => ({ ...prev, [key]: Number(val) || 0 }));
+  }
 
   function validate() {
     const next: typeof errors = {};
-
     if (!foodName.trim()) next.foodName = "Food name is required";
-
-    // todo later automatically for some foods
-    if (!calories) errors.calories = "Calories are required";
-    else if (Number.isNaN(calories) || calories < 0)
-      next.calories = "Calories must be a positive number";
-
     setErrors(next);
-    if (Object.keys(next).length > 0) return false;
-    return true;
+    return Object.keys(next).length === 0;
   }
 
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm">
-      <h2 className="mb-4 capitalize font-medium">Add to {meal}</h2>
+      <h2 className="mb-4 capitalize font-medium text-gray-700">
+        Add to {meal}
+      </h2>
       <form
         className="space-y-3"
         onSubmit={(e) => {
@@ -46,25 +44,56 @@ export default function AddEntry({ meal, onClose }: Props) {
           addEntry(meal, {
             id: String(Date.now()),
             name: foodName.trim(),
-            calories: Number(calories),
+            calories: totalCalories,
+            fats: macros.fats,
+            protein: macros.protein,
+            carbs: macros.carbs,
           });
           onClose();
         }}
       >
         <InputField
           label="Food name"
-          onChange={(name) => setFoodName(name)}
+          type="text"
           value={foodName}
-          error={errors.foodName}
+          onChange={(val) => setFoodName(val)}
           placeholder="e.g. Chicken breast"
+          error={errors.foodName}
         />
-        <InputField
-          label="Calories (kcal)"
-          onChange={(name) => setCalories(name)}
-          value={calories}
-          error={errors.calories}
-          placeholder="e.g. 250"
-        />
+
+        <div className="grid grid-cols-3 gap-3">
+          <InputField
+            label="Protein (g)"
+            type="number"
+            value={macros.protein}
+            onChange={setMacro("protein")}
+            placeholder="0"
+            required={false}
+          />
+          <InputField
+            label="Carbs (g)"
+            type="number"
+            value={macros.carbs}
+            onChange={setMacro("carbs")}
+            placeholder="0"
+            required={false}
+          />
+          <InputField
+            label="Fat (g)"
+            type="number"
+            value={macros.fats}
+            onChange={setMacro("fats")}
+            placeholder="0"
+            required={false}
+          />
+        </div>
+
+        <div className="rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-600">
+          Calculated:{" "}
+          <span className="font-semibold text-gray-900">
+            {totalCalories} kcal
+          </span>
+        </div>
 
         <div className="flex gap-2 pt-1">
           <button

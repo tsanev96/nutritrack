@@ -5,9 +5,7 @@ import { useTrackerStore } from "@/store/useTrackerStore";
 import { useState } from "react";
 import AddEntry from "./AddEntry";
 
-type Props = {
-  meal: Meal;
-};
+type Props = Readonly<{ meal: Meal }>;
 
 export default function MealCard({ meal }: Props) {
   const [showAddForm, setShowAddForm] = useState(false);
@@ -34,10 +32,15 @@ export default function MealCard({ meal }: Props) {
           <li className="text-sm text-gray-400">No items</li>
         )}
         {entries.map((e) => (
-          <li key={e.id} className="flex items-center justify-between">
+          <li key={e.id} className="flex items-start justify-between">
             <div>
-              <div className="text-sm font-medium ">{e.name}</div>
+              <div className="text-sm font-medium text-gray-500">{e.name}</div>
               <div className="text-xs text-gray-500">{e.calories} kcal</div>
+              <div className="mt-0.5 flex gap-2 text-xs text-gray-400">
+                {e.protein !== undefined && <span>P {e.protein}g</span>}
+                {e.carbs !== undefined && <span>C {e.carbs}g</span>}
+                {e.fats !== undefined && <span>F {e.fats}g</span>}
+              </div>
             </div>
             <button
               onClick={() => removeEntry(meal, e.id)}

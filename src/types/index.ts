@@ -49,6 +49,8 @@ export type ActivityLevel =
 
 export type WeeklyGoal = "lose" | "maintain" | "gain";
 
+export type WEIGHT_UNITS = "kg" | "lbs";
+
 export type FitnessGoals = {
   targetWeight: number;
   weightUnit: "kg" | "lbs";

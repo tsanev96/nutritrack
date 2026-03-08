@@ -5,6 +5,7 @@ import { useTrackerStore } from "@/store/useTrackerStore";
 import type { MicroNutrients } from "@/types";
 import { MICRO_NUTRIENTS_NAMES } from "@/lib/constants";
 import Headline from "@/components/common/Headline";
+import SaveActions from "./SaveActions";
 
 type MicroKey = keyof MicroNutrients;
 
@@ -113,22 +114,7 @@ export default function MicronutrientsSection() {
         </div>
       ))}
 
-      {isEditing && (
-        <div className="mt-4 flex gap-2">
-          <button
-            onClick={handleSave}
-            className="flex-1 rounded-md bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleCancel}
-            className="flex-1 rounded-md border py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-        </div>
-      )}
+      {isEditing && <SaveActions onSave={handleSave} onCancel={handleCancel} />}
     </section>
   );
 }

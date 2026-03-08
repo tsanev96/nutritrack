@@ -25,6 +25,39 @@ export const DEFAULT_MICRO_GOALS: MicroNutrients = {
   vitaminK: { value: 120, unit: "mcg" },
 };
 
+export const MICRO_NUTRIENTS_NAMES: Record<keyof MicroNutrients, string> = {
+  saturatedFat: "Saturated Fat",
+  polyunsaturatedFat: "Polyunsaturated Fat",
+  monounsaturatedFat: "Monounsaturated Fat",
+  transFat: "Trans Fat",
+  fiber: "Fiber",
+  sugar: "Sugar",
+  cholesterol: "Cholesterol",
+  sodium: "Sodium",
+  potassium: "Potassium",
+  calcium: "Calcium",
+  iron: "Iron",
+  vitaminA: "Vitamin A",
+  vitaminC: "Vitamin C",
+  vitaminD: "Vitamin D",
+  vitaminE: "Vitamin E",
+  vitaminK: "Vitamin K",
+};
+
+export const ACTIVITY_LABELS = {
+  sedentary: "Sedentary (little or no exercise)",
+  light: "Lightly active (1–3 days/week)",
+  moderate: "Moderately active (3–5 days/week)",
+  active: "Active (6–7 days/week)",
+  veryActive: "Very active (hard exercise daily)",
+};
+
+export const WEEKLY_GOAL_LABELS = {
+  lose: "Lose weight",
+  maintain: "Maintain weight",
+  gain: "Gain weight",
+};
+
 export const DEFAULT_FITNESS_GOALS: FitnessGoals = {
   targetWeight: 70,
   weightUnit: "kg",

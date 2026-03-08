@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import InputField from "@/components/common/InputField";
 import Headline from "@/components/common/Headline";
+import SaveActions from "./SaveActions";
 
 export default function NutritionGoalsSection() {
   const dailyGoal = useTrackerStore((s) => s.dailyGoal);
@@ -46,6 +47,33 @@ export default function NutritionGoalsSection() {
     { label: "Fat", value: `${macroGoals.fats} g` },
   ];
 
+  const inputFields = [
+    {
+      label: "Calories (kcal)",
+      key: "calories",
+      placeholder: "2000",
+      onChange: (calories: string) => setForm((p) => ({ ...p, calories })),
+    },
+    {
+      label: "Protein (g)",
+      key: "protein",
+      placeholder: "150",
+      onChange: (protein: string) => setForm((p) => ({ ...p, protein })),
+    },
+    {
+      label: "Carbs (g)",
+      key: "carbs",
+      placeholder: "200",
+      onChange: (carbs: string) => setForm((p) => ({ ...p, carbs })),
+    },
+    {
+      label: "Fat (g)",
+      key: "fats",
+      placeholder: "65",
+      onChange: (fats: string) => setForm((p) => ({ ...p, fats })),
+    },
+  ];
+
   return (
     <section className="rounded-lg bg-white p-4 shadow-sm">
       <div className="mb-4 flex items-center justify-between">
@@ -62,14 +90,17 @@ export default function NutritionGoalsSection() {
 
       {isEditing ? (
         <div className="space-y-3">
-          <InputField label="Calories (kcal)" type="number" value={form.calories} onChange={(v) => setForm((p) => ({ ...p, calories: v }))} placeholder="2000" />
-          <InputField label="Protein (g)" type="number" value={form.protein} onChange={(v) => setForm((p) => ({ ...p, protein: v }))} placeholder="150" />
-          <InputField label="Carbs (g)" type="number" value={form.carbs} onChange={(v) => setForm((p) => ({ ...p, carbs: v }))} placeholder="200" />
-          <InputField label="Fat (g)" type="number" value={form.fats} onChange={(v) => setForm((p) => ({ ...p, fats: v }))} placeholder="65" />
-          <div className="flex gap-2 pt-1">
-            <button onClick={handleSave} className="flex-1 rounded-md bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700">Save</button>
-            <button onClick={handleCancel} className="flex-1 rounded-md border py-2 text-sm font-medium text-gray-600 hover:bg-gray-50">Cancel</button>
-          </div>
+          {inputFields.map(({ label, key, placeholder, onChange }) => (
+            <InputField
+              key={key}
+              label={label}
+              type="number"
+              placeholder={placeholder}
+              value={form[key as keyof typeof form]}
+              onChange={onChange}
+            />
+          ))}
+          <SaveActions onSave={handleSave} onCancel={handleCancel} />
         </div>
       ) : (
         <ul className="divide-y">

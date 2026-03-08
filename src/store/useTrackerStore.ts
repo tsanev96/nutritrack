@@ -1,7 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { TrackerState, TrackerActions, Meal, Entry } from "@/types";
-import { DEFAULT_DAILY_GOAL, STORAGE_KEY } from "@/lib/constants";
+import type {
+  TrackerState,
+  TrackerActions,
+  Meal,
+  Entry,
+  Macros,
+  MicroNutrients,
+  FitnessGoals,
+} from "@/types";
+import {
+  DEFAULT_DAILY_GOAL,
+  DEFAULT_MACRO_GOALS,
+  DEFAULT_MICRO_GOALS,
+  DEFAULT_FITNESS_GOALS,
+  STORAGE_KEY,
+} from "@/lib/constants";
 
 const emptyDayLog = (): TrackerState["entries"] => ({
   breakfast: [],
@@ -15,6 +29,9 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
     (set) => ({
       entries: emptyDayLog(),
       dailyGoal: DEFAULT_DAILY_GOAL,
+      macroGoals: DEFAULT_MACRO_GOALS,
+      microNutrientGoals: DEFAULT_MICRO_GOALS,
+      fitnessGoals: DEFAULT_FITNESS_GOALS,
 
       addEntry: (meal: Meal, entry: Entry) =>
         set((state) => ({
@@ -23,28 +40,21 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
             [meal]: [...state.entries[meal], entry],
           },
         })),
+
       removeEntry: (meal: Meal, id: string) =>
         set((state) => ({
           entries: {
             ...state.entries,
-            [meal]: state.entries[meal].filter((e) => e.id != id),
-          },
-        })),
-      setDailyGoal: (goal: number) => set({ dailyGoal: goal }),
-    }),
-    {
-      name: STORAGE_KEY,
-    },
-  ),
-);
-
-/*
-
-
-set((state) => ({
-          entries: {
-            ...state.entries,
             [meal]: state.entries[meal].filter((e) => e.id !== id),
           },
-        }))
-*/
+        })),
+
+      setDailyGoal: (goal: number) => set({ dailyGoal: goal }),
+      setMacroGoals: (goals: Macros) => set({ macroGoals: goals }),
+      setMicroNutrientGoals: (goals: MicroNutrients) =>
+        set({ microNutrientGoals: goals }),
+      setFitnessGoals: (goals: FitnessGoals) => set({ fitnessGoals: goals }),
+    }),
+    { name: STORAGE_KEY },
+  ),
+);

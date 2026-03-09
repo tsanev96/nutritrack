@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import InputField from "@/components/common/InputField";
-import Headline from "@/components/common/Headline";
 import SaveActions from "./SaveActions";
 import type { Macros } from "@/types";
-import { selectDailyCalories } from "@/store/selectors";
+import { calcCalories } from "@/utils/calculateCalories";
+import Card from "@/components/common/Card";
+import Rows from "./Rows";
+import HeadlineWrapper from "./HeadlineWrapper";
 
 export default function NutritionGoalsSection() {
   const macroGoals = useTrackerStore((s) => s.macroGoals);
@@ -33,7 +35,7 @@ export default function NutritionGoalsSection() {
   const rows = [
     {
       label: "Calories",
-      value: `${selectDailyCalories(useTrackerStore.getState())} kcal`,
+      value: `${calcCalories(macroGoals)} kcal`,
     },
     { label: "Protein", value: `${macroGoals.protein} g` },
     { label: "Carbs", value: `${macroGoals.carbs} g` },
@@ -62,23 +64,13 @@ export default function NutritionGoalsSection() {
   ];
 
   return (
-    <section className="rounded-lg bg-white p-4 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <Headline title="Daily Nutrition Goals" />
-        {!isEditing && (
-          <button
-            onClick={handleEdit}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Edit
-          </button>
-        )}
-      </div>
+    <Card>
+      <HeadlineWrapper title="Daily Nutrition Goals" onEdit={handleEdit} />
 
       {isEditing ? (
         <div className="space-y-3">
           <p className="text-gray-500">
-            Calories (kcal) {selectDailyCalories(useTrackerStore.getState())}
+            Calories (kcal) {calcCalories(macrosForm)}
           </p>
           {inputFields.map(({ label, key, placeholder, onChange }) => (
             <InputField
@@ -93,15 +85,8 @@ export default function NutritionGoalsSection() {
           <SaveActions onSave={handleSave} onCancel={handleCancel} />
         </div>
       ) : (
-        <ul className="divide-y">
-          {rows.map(({ label, value }) => (
-            <li key={label} className="flex justify-between py-2 text-sm">
-              <span className="text-gray-500">{label}</span>
-              <span className="font-medium text-gray-900">{value}</span>
-            </li>
-          ))}
-        </ul>
+        <Rows rows={rows} />
       )}
-    </section>
+    </Card>
   );
 }

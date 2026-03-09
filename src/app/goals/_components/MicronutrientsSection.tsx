@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import type { MicroNutrients } from "@/types";
 import { MICRO_NUTRIENTS_NAMES } from "@/lib/constants";
-import Headline from "@/components/common/Headline";
+import Card from "@/components/common/Card";
 import SaveActions from "./SaveActions";
+import HeadlineWrapper from "./HeadlineWrapper";
 
 type MicroKey = keyof MicroNutrients;
 
@@ -62,18 +63,11 @@ export default function MicronutrientsSection() {
   }
 
   return (
-    <section className="rounded-lg bg-white p-4 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <Headline title="Micronutrients" variant="h2" />
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Edit
-          </button>
-        )}
-      </div>
+    <Card>
+      <HeadlineWrapper
+        title="Micronutrients"
+        onEdit={() => setIsEditing(true)}
+      />
 
       {GROUPS.map(({ label, keys }) => (
         <div key={label} className="mb-4 last:mb-0">
@@ -115,6 +109,6 @@ export default function MicronutrientsSection() {
       ))}
 
       {isEditing && <SaveActions onSave={handleSave} onCancel={handleCancel} />}
-    </section>
+    </Card>
   );
 }

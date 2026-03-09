@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import type { ActivityLevel, WeeklyGoal } from "@/types";
-import Headline from "@/components/common/Headline";
+import Card from "@/components/common/Card";
 import SelectField from "@/components/common/SelectField";
 import SaveActions from "./SaveActions";
 import { ACTIVITY_LABELS, WEEKLY_GOAL_LABELS } from "@/lib/constants";
+import Rows from "./Rows";
+import HeadlineWrapper from "./HeadlineWrapper";
 
 const ACTIVITY_OPTIONS = Object.keys(ACTIVITY_LABELS).map((key) => ({
   value: key,
@@ -50,18 +52,8 @@ export default function FitnessSection() {
   ];
 
   return (
-    <section className="rounded-lg bg-white p-4 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
-        <Headline title="Fitness" />
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Edit
-          </button>
-        )}
-      </div>
+    <Card>
+      <HeadlineWrapper title="Fitness" onEdit={() => setIsEditing(true)} />
 
       {isEditing ? (
         <div className="space-y-3">
@@ -115,15 +107,8 @@ export default function FitnessSection() {
           <SaveActions onSave={handleSave} onCancel={handleCancel} />
         </div>
       ) : (
-        <ul className="divide-y">
-          {rows.map(({ label, value }) => (
-            <li key={label} className="flex justify-between py-2 text-sm">
-              <span className="text-gray-500">{label}</span>
-              <span className="font-medium text-gray-900">{value}</span>
-            </li>
-          ))}
-        </ul>
+        <Rows rows={rows} />
       )}
-    </section>
+    </Card>
   );
 }

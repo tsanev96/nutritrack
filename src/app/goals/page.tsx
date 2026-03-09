@@ -2,6 +2,7 @@ import Headline from "@/components/common/Headline";
 import NutritionGoalsSection from "./_components/NutritionGoalsSection";
 import MicronutrientsSection from "./_components/MicronutrientsSection";
 import FitnessSection from "./_components/FitnessSection";
+import MealsCalories from "./_components/MealsCalories";
 
 export default function Goals() {
   return (
@@ -10,6 +11,7 @@ export default function Goals() {
         <Headline title="Goals" variant="h1" />
         {/* todo grid */}
         <NutritionGoalsSection />
+        <MealsCalories />
         <MicronutrientsSection />
         <FitnessSection />
       </div>

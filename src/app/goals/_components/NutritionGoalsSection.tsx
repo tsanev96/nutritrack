@@ -31,7 +31,10 @@ export default function NutritionGoalsSection() {
   }
 
   const rows = [
-    { label: "Calories", value: `${selectDailyCalories(macroGoals)} kcal` },
+    {
+      label: "Calories",
+      value: `${selectDailyCalories(useTrackerStore.getState())} kcal`,
+    },
     { label: "Protein", value: `${macroGoals.protein} g` },
     { label: "Carbs", value: `${macroGoals.carbs} g` },
     { label: "Fat", value: `${macroGoals.fats} g` },

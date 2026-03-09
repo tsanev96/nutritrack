@@ -1,16 +1,11 @@
 "use client";
 
-import { selectDailyCalories } from "@/store/selectors";
+import { selectDailyCalories, selectConsumedCalories } from "@/store/selectors";
 import { useTrackerStore } from "@/store/useTrackerStore";
 
 export default function DailySummary() {
-  const entries = useTrackerStore((s) => s.entries);
-
-  const dailyGoal = selectDailyCalories(useTrackerStore.getState());
-
-  const totalCalories = Object.values(entries)
-    .flat()
-    .reduce((sum, e) => sum + (e.calories || 0), 0);
+  const dailyGoal = useTrackerStore(selectDailyCalories);
+  const totalCalories = useTrackerStore(selectConsumedCalories);
 
   const progress = Math.min(100, Math.round((totalCalories / dailyGoal) * 100));
 

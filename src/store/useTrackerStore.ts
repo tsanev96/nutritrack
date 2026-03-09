@@ -47,12 +47,11 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
           },
         })),
 
-      // setDailyGoal: (goal: number) => set({ dailyGoal: goal }),
       setMacroGoals: (goals: Macros) => set({ macroGoals: goals }),
       setMicroNutrientGoals: (goals: MicroNutrients) =>
         set({ microNutrientGoals: goals }),
       setFitnessGoals: (goals: FitnessGoals) => set({ fitnessGoals: goals }),
     }),
-    { name: STORAGE_KEY },
+    { name: STORAGE_KEY, version: 2 },
   ),
 );

@@ -60,7 +60,6 @@ export type FitnessGoals = {
 
 export type TrackerState = {
   entries: DayLog;
-  dailyGoal: number;
   macroGoals: Macros;
   microNutrientGoals: MicroNutrients;
   fitnessGoals: FitnessGoals;
@@ -69,7 +68,6 @@ export type TrackerState = {
 export type TrackerActions = {
   addEntry: (meal: Meal, entry: Entry) => void;
   removeEntry: (meal: Meal, id: string) => void;
-  setDailyGoal: (goal: number) => void;
   setMacroGoals: (goals: Macros) => void;
   setMicroNutrientGoals: (goals: MicroNutrients) => void;
   setFitnessGoals: (goals: FitnessGoals) => void;

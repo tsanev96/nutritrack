@@ -10,7 +10,6 @@ import type {
   FitnessGoals,
 } from "@/types";
 import {
-  DEFAULT_DAILY_GOAL,
   DEFAULT_MACRO_GOALS,
   DEFAULT_MICRO_GOALS,
   DEFAULT_FITNESS_GOALS,
@@ -28,7 +27,6 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
   persist(
     (set) => ({
       entries: emptyDayLog(),
-      dailyGoal: DEFAULT_DAILY_GOAL,
       macroGoals: DEFAULT_MACRO_GOALS,
       microNutrientGoals: DEFAULT_MICRO_GOALS,
       fitnessGoals: DEFAULT_FITNESS_GOALS,
@@ -49,7 +47,7 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
           },
         })),
 
-      setDailyGoal: (goal: number) => set({ dailyGoal: goal }),
+      // setDailyGoal: (goal: number) => set({ dailyGoal: goal }),
       setMacroGoals: (goals: Macros) => set({ macroGoals: goals }),
       setMicroNutrientGoals: (goals: MicroNutrients) =>
         set({ microNutrientGoals: goals }),

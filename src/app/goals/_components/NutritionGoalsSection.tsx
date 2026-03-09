@@ -5,43 +5,33 @@ import { useTrackerStore } from "@/store/useTrackerStore";
 import InputField from "@/components/common/InputField";
 import Headline from "@/components/common/Headline";
 import SaveActions from "./SaveActions";
+import type { Macros } from "@/types";
+import { selectDailyCalories } from "@/store/selectors";
 
 export default function NutritionGoalsSection() {
-  const dailyGoal = useTrackerStore((s) => s.dailyGoal);
   const macroGoals = useTrackerStore((s) => s.macroGoals);
-  const setDailyGoal = useTrackerStore((s) => s.setDailyGoal);
   const setMacroGoals = useTrackerStore((s) => s.setMacroGoals);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState({
-    calories: String(dailyGoal),
-    protein: String(macroGoals.protein),
-    carbs: String(macroGoals.carbs),
-    fats: String(macroGoals.fats),
-  });
+  const [macrosForm, setMacrosForm] = useState<Macros>(macroGoals);
+
+  function handleEdit() {
+    setMacrosForm(macroGoals);
+    setIsEditing(true);
+  }
 
   function handleSave() {
-    setDailyGoal(Number(form.calories) || 0);
-    setMacroGoals({
-      protein: Number(form.protein) || 0,
-      carbs: Number(form.carbs) || 0,
-      fats: Number(form.fats) || 0,
-    });
+    setMacroGoals(macrosForm);
     setIsEditing(false);
   }
 
   function handleCancel() {
-    setForm({
-      calories: String(dailyGoal),
-      protein: String(macroGoals.protein),
-      carbs: String(macroGoals.carbs),
-      fats: String(macroGoals.fats),
-    });
+    setMacrosForm(macroGoals);
     setIsEditing(false);
   }
 
   const rows = [
-    { label: "Calories", value: `${dailyGoal} kcal` },
+    { label: "Calories", value: `${selectDailyCalories(macroGoals)} kcal` },
     { label: "Protein", value: `${macroGoals.protein} g` },
     { label: "Carbs", value: `${macroGoals.carbs} g` },
     { label: "Fat", value: `${macroGoals.fats} g` },
@@ -49,28 +39,22 @@ export default function NutritionGoalsSection() {
 
   const inputFields = [
     {
-      label: "Calories (kcal)",
-      key: "calories",
-      placeholder: "2000",
-      onChange: (calories: string) => setForm((p) => ({ ...p, calories })),
-    },
-    {
       label: "Protein (g)",
-      key: "protein",
+      key: "protein" as keyof Macros,
       placeholder: "150",
-      onChange: (protein: string) => setForm((p) => ({ ...p, protein })),
+      onChange: (protein: number) => setMacrosForm((p) => ({ ...p, protein })),
     },
     {
       label: "Carbs (g)",
-      key: "carbs",
+      key: "carbs" as keyof Macros,
       placeholder: "200",
-      onChange: (carbs: string) => setForm((p) => ({ ...p, carbs })),
+      onChange: (carbs: number) => setMacrosForm((p) => ({ ...p, carbs })),
     },
     {
       label: "Fat (g)",
-      key: "fats",
+      key: "fats" as keyof Macros,
       placeholder: "65",
-      onChange: (fats: string) => setForm((p) => ({ ...p, fats })),
+      onChange: (fats: number) => setMacrosForm((p) => ({ ...p, fats })),
     },
   ];
 
@@ -80,7 +64,7 @@ export default function NutritionGoalsSection() {
         <Headline title="Daily Nutrition Goals" />
         {!isEditing && (
           <button
-            onClick={() => setIsEditing(true)}
+            onClick={handleEdit}
             className="text-sm text-blue-600 hover:underline"
           >
             Edit
@@ -90,13 +74,16 @@ export default function NutritionGoalsSection() {
 
       {isEditing ? (
         <div className="space-y-3">
+          <p className="text-gray-500">
+            Calories (kcal) {selectDailyCalories(useTrackerStore.getState())}
+          </p>
           {inputFields.map(({ label, key, placeholder, onChange }) => (
             <InputField
               key={key}
               label={label}
               type="number"
               placeholder={placeholder}
-              value={form[key as keyof typeof form]}
+              value={macrosForm[key]}
               onChange={onChange}
             />
           ))}

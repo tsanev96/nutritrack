@@ -2,8 +2,8 @@
 
 import { FoodSuggestion, searchFood } from "@/lib/foodApi";
 import { useState } from "react";
-import { calcCalories } from "@/utils/calculateCalories";
 import ErrorMessage from "./common/ErrorMessage";
+import { calcCalories } from "@/utils/calculateCalories";
 
 type Props = Readonly<{
   foodName: string;
@@ -100,7 +100,7 @@ export default function FoodSearch({
                   <div className="mt-0.5 text-xs text-gray-400">
                     P {food.protein}g · C {food.carbs}g · F {food.fats}g
                     <span className="ml-2 text-gray-500">
-                      ({calcCalories(food)} kcal) per 100g
+                      {calcCalories(food)} kcal per 100g
                     </span>
                   </div>
                 </button>

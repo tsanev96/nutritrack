@@ -3,9 +3,9 @@
 import { useState } from "react";
 import type { Meal } from "@/types";
 import { useTrackerStore } from "@/store/useTrackerStore";
-import { calcCalories } from "@/utils/calculateCalories";
 import FoodSearch from "./FoodSearch";
 import MacroInputs from "./MacroInputs";
+import { selectDailyCalories } from "@/store/selectors";
 
 type Props = Readonly<{
   meal: Meal;
@@ -18,7 +18,7 @@ export default function AddEntry({ meal, onClose }: Props) {
   const [macros, setMacros] = useState({ fats: 0, protein: 0, carbs: 0 });
   const [errors, setErrors] = useState<{ foodName?: string }>({});
 
-  const totalCalories = calcCalories(macros);
+  const totalCalories = selectDailyCalories(useTrackerStore.getState());
 
   function setMacro(key: keyof typeof macros) {
     return (val: number | string) =>

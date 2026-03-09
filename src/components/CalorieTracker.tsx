@@ -2,7 +2,7 @@
 
 import { MEALS } from "@/lib/constants";
 import DailySummary from "./DailySummary";
-import GoalInput from "./GoalInput";
+// import GoalInput from "./GoalInput";
 import MealCard from "./MealCard";
 
 export default function CalorieTracker() {
@@ -11,7 +11,7 @@ export default function CalorieTracker() {
       <div className="mx-auto max-w-4xl">
         <header className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Calories Tracker</h1>
-          <GoalInput />
+          {/* <GoalInput /> todo */}
         </header>
 
         <DailySummary />

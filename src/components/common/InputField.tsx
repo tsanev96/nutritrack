@@ -8,6 +8,7 @@ type Props<T extends string | number> = Readonly<{
   placeholder?: string;
   type: "text" | "number";
   required?: boolean;
+  disabled?: boolean;
 }>;
 
 export default function InputField<T extends string | number>({
@@ -18,6 +19,7 @@ export default function InputField<T extends string | number>({
   placeholder,
   type,
   required = true,
+  disabled,
 }: Props<T>) {
   return (
     <div>
@@ -29,6 +31,7 @@ export default function InputField<T extends string | number>({
       </label>
       <input
         id={label}
+        disabled={disabled}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value as unknown as T)}

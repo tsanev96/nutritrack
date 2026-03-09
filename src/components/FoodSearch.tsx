@@ -23,6 +23,7 @@ export default function FoodSearch({
   const [searchError, setSearchError] = useState<string | null>(null);
 
   async function handleSearch() {
+    // todo new search should clear previous suggestions and errors
     if (!foodName.trim()) return;
     setSearching(true);
     setSearchError(null);
@@ -41,6 +42,7 @@ export default function FoodSearch({
     }
   }
 
+  console.log("food api: ", suggestions);
   return (
     <div>
       <label

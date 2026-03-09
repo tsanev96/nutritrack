@@ -6,10 +6,11 @@ type Macros = { fats: number; protein: number; carbs: number };
 
 type Props = Readonly<{
   macros: Macros;
+  disabled?: boolean;
   onChange: (key: keyof Macros) => (val: number | string) => void;
 }>;
 
-export default function MacroInputs({ macros, onChange }: Props) {
+export default function MacroInputs({ macros, disabled, onChange }: Props) {
   return (
     <div className="grid grid-cols-3 gap-3">
       <InputField
@@ -19,6 +20,7 @@ export default function MacroInputs({ macros, onChange }: Props) {
         onChange={onChange("protein")}
         placeholder="0"
         required={false}
+        disabled={disabled}
       />
       <InputField
         label="Carbs (g)"
@@ -27,6 +29,7 @@ export default function MacroInputs({ macros, onChange }: Props) {
         onChange={onChange("carbs")}
         placeholder="0"
         required={false}
+        disabled={disabled}
       />
       <InputField
         label="Fat (g)"
@@ -35,6 +38,7 @@ export default function MacroInputs({ macros, onChange }: Props) {
         onChange={onChange("fats")}
         placeholder="0"
         required={false}
+        disabled={disabled}
       />
     </div>
   );

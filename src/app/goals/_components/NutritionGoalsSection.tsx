@@ -6,7 +6,7 @@ import InputField from "@/components/common/InputField";
 import SaveActions from "./SaveActions";
 import type { Macros } from "@/types";
 import { calcCalories } from "@/utils/calculateCalories";
-import Card from "@/components/common/Card";
+import CardSection from "@/components/common/CardSection";
 import Rows from "./Rows";
 import HeadlineWrapper from "./HeadlineWrapper";
 
@@ -64,7 +64,7 @@ export default function NutritionGoalsSection() {
   ];
 
   return (
-    <Card>
+    <CardSection>
       <HeadlineWrapper title="Daily Nutrition Goals" onEdit={handleEdit} />
 
       {isEditing ? (
@@ -87,6 +87,6 @@ export default function NutritionGoalsSection() {
       ) : (
         <Rows rows={rows} />
       )}
-    </Card>
+    </CardSection>
   );
 }

@@ -1,4 +1,4 @@
-export type Meal = "Breakfast" | "Lunch" | "Dinner" | "Snacks";
+export type Meal = "breakfast" | "lunch" | "dinner" | "snacks";
 
 export type Entry = {
   id: string;
@@ -58,11 +58,26 @@ export type FitnessGoals = {
   weeklyGoal: WeeklyGoal;
 };
 
+export type BodyMeasurements = {
+  neck?: number;
+  waist?: number;
+  hips?: number;
+};
+
+export type CheckIn = {
+  /**  YYYY-MM-DD */
+  date: string;
+  weight?: number;
+  measurements: BodyMeasurements;
+};
+
 export type TrackerState = {
   entries: DayLog;
   macroGoals: Macros;
   microNutrientGoals: MicroNutrients;
   fitnessGoals: FitnessGoals;
+  /** List of all check-ins measurements */
+  checkIns: CheckIn[];
 };
 
 export type TrackerActions = {
@@ -71,4 +86,5 @@ export type TrackerActions = {
   setMacroGoals: (goals: Macros) => void;
   setMicroNutrientGoals: (goals: MicroNutrients) => void;
   setFitnessGoals: (goals: FitnessGoals) => void;
+  addCheckIn: (checkIn: CheckIn) => void;
 };

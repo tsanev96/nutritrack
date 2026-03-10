@@ -8,6 +8,7 @@ import type {
   Macros,
   MicroNutrients,
   FitnessGoals,
+  CheckIn,
 } from "@/types";
 import {
   DEFAULT_MACRO_GOALS,
@@ -30,6 +31,7 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
       macroGoals: DEFAULT_MACRO_GOALS,
       microNutrientGoals: DEFAULT_MICRO_GOALS,
       fitnessGoals: DEFAULT_FITNESS_GOALS,
+      checkIns: [],
 
       addEntry: (meal: Meal, entry: Entry) =>
         set((state) => ({
@@ -51,6 +53,13 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
       setMicroNutrientGoals: (goals: MicroNutrients) =>
         set({ microNutrientGoals: goals }),
       setFitnessGoals: (goals: FitnessGoals) => set({ fitnessGoals: goals }),
+      addCheckIn: (checkIn: CheckIn) =>
+        set((state) => ({
+          checkIns: [
+            ...state.checkIns.filter((c) => c.date !== checkIn.date),
+            checkIn,
+          ],
+        })),
     }),
     { name: STORAGE_KEY, version: 2 },
   ),

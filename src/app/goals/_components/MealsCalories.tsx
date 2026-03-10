@@ -2,7 +2,7 @@
 
 import { useTrackerStore } from "@/store/useTrackerStore";
 import Rows from "./Rows";
-import Card from "@/components/common/Card";
+import CardSection from "@/components/common/CardSection";
 import HeadlineWrapper from "./HeadlineWrapper";
 
 export default function MealsCalories() {
@@ -14,9 +14,9 @@ export default function MealsCalories() {
   });
 
   return (
-    <Card>
+    <CardSection>
       <HeadlineWrapper title="Calories per Meal" />
       <Rows rows={rows} />
-    </Card>
+    </CardSection>
   );
 }

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import type { ActivityLevel, WeeklyGoal } from "@/types";
-import Card from "@/components/common/Card";
+import CardSection from "@/components/common/CardSection";
 import SelectField from "@/components/common/SelectField";
 import SaveActions from "./SaveActions";
 import { ACTIVITY_LABELS, WEEKLY_GOAL_LABELS } from "@/lib/constants";
@@ -52,7 +52,7 @@ export default function FitnessSection() {
   ];
 
   return (
-    <Card>
+    <CardSection>
       <HeadlineWrapper title="Fitness" onEdit={() => setIsEditing(true)} />
 
       {isEditing ? (
@@ -109,6 +109,6 @@ export default function FitnessSection() {
       ) : (
         <Rows rows={rows} />
       )}
-    </Card>
+    </CardSection>
   );
 }

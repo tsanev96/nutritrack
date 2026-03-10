@@ -71,7 +71,7 @@ export default function MicronutrientsSection() {
 
       {GROUPS.map(({ label, keys }) => (
         <div key={label} className="mb-4 last:mb-0">
-          <p className="mb-1 text-xs font-semibold text-gray-400">{label}</p>
+          <p className="mb-1 text-xs font-semibold text-gray-700">{label}</p>
           {isEditing ? (
             <div className="grid grid-cols-2 gap-2">
               {keys.map((key) => (

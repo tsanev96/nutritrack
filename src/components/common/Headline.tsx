@@ -7,8 +7,8 @@ type Props = Readonly<{
 
 const STYLES: Record<Variant, string> = {
   h1: "text-2xl font-semibold text-gray-900",
-  h2: "text-sm font-semibold uppercase tracking-wide text-gray-400",
-  h3: "text-xs font-semibold uppercase tracking-wide text-gray-400",
+  h2: "text-sm font-semibold tracking-wide text-gray-700",
+  h3: "text-xs font-semibold tracking-wide text-gray-700",
 };
 
 export default function Headline({ title, variant = "h2" }: Props) {

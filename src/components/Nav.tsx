@@ -3,33 +3,73 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const LINKS = [
-  { href: "/", label: "Home" },
-  { href: "/goals", label: "Goals" },
+const SECTIONS = [
+  {
+    label: "Home",
+    links: [
+      { href: "/", label: "Home" },
+      { href: "/goals", label: "Goals" },
+      { href: "/check-in", label: "Check-in" },
+    ],
+  },
+  {
+    label: "Food",
+    links: [
+      { href: "/food/diary", label: "Food Diary" },
+      { href: "/food/database", label: "Database" },
+      { href: "/food/my-meals", label: "My Meals" },
+      { href: "/food/recipes", label: "My Recipes" },
+    ],
+  },
 ];
 
 export default function Nav() {
   const pathname = usePathname();
 
+  const activeSection =
+    SECTIONS.find((s) => s.links.some((l) => l.href === pathname)) ??
+    SECTIONS[0];
+
   return (
-    <nav className="border-b bg-white px-6 py-3">
-      <div className="mx-auto flex max-w-4xl items-center gap-6">
+    <nav className="border-b bg-white">
+      {/* Top row: logo + section tabs */}
+      <div className="mx-auto flex max-w-4xl items-center gap-6 px-6 py-3">
         <span className="font-semibold text-gray-900">CalTracker</span>
-        <div className="flex gap-4">
-          {LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`text-sm font-medium transition-colors ${
-                pathname === href
-                  ? "text-blue-600"
-                  : "text-gray-500 hover:text-gray-900"
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+        <div className="flex gap-1">
+          {SECTIONS.map((section) => {
+            const isActive = section.label === activeSection.label;
+            return (
+              <Link
+                key={section.label}
+                href={section.links[0].href}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-blue-50 text-blue-600"
+                    : "text-gray-500 hover:text-gray-900"
+                }`}
+              >
+                {section.label}
+              </Link>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Bottom row: sub-links for active section */}
+      <div className="mx-auto flex max-w-4xl gap-4 px-6 pb-2">
+        {activeSection.links.map(({ href, label }) => (
+          <Link
+            key={href}
+            href={href}
+            className={`text-sm transition-colors ${
+              pathname === href
+                ? "border-b-2 border-blue-600 pb-1 font-medium text-blue-600"
+                : "pb-1 text-gray-500 hover:text-gray-900"
+            }`}
+          >
+            {label}
+          </Link>
+        ))}
       </div>
     </nav>
   );

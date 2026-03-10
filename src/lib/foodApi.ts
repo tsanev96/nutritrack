@@ -1,5 +1,6 @@
 const USDA_BASE = "https://api.nal.usda.gov/fdc/v1";
 
+// https://fdc.nal.usda.gov/GBFPD_Documentation
 /** USDA nutrient IDs for the macros we care about */
 const NUTRIENT = {
   protein: 1003,

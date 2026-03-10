@@ -1,4 +1,9 @@
-import type { FitnessGoals, Meal, MicroNutrients } from "@/types";
+import type {
+  BodyMeasurements,
+  FitnessGoals,
+  Meal,
+  MicroNutrients,
+} from "@/types";
 
 export const MEALS: Meal[] = ["breakfast", "lunch", "dinner", "snacks"];
 
@@ -66,3 +71,12 @@ export const DEFAULT_FITNESS_GOALS: FitnessGoals = {
 };
 
 export const STORAGE_KEY = "calorie-tracker-v1";
+
+export const MEASUREMENT_KEYS = Object.keys({
+  neck: 0,
+  waist: 0,
+  hips: 0,
+} satisfies Record<
+  keyof BodyMeasurements,
+  number
+>) as (keyof BodyMeasurements)[];

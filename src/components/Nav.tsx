@@ -9,7 +9,7 @@ const SECTIONS = [
     links: [
       { href: "/", label: "Home" },
       { href: "/goals", label: "Goals" },
-      { href: "/check-in", label: "Check-in" },
+      { href: "/measurements/check-in", label: "Check-in" },
     ],
   },
   {

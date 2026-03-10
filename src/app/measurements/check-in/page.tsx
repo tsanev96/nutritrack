@@ -1,19 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useTrackerStore } from "@/store/useTrackerStore";
-import type { BodyMeasurements } from "@/types";
 import Headline from "@/components/common/Headline";
 import CardSection from "@/components/common/CardSection";
 import Button from "@/components/common/Button";
+import type { BodyMeasurements } from "@/types";
+import { getTodayDate } from "@/utils/dates";
+import { addCheckInMeasurements } from "@/utils/checkIn";
+import { MEASUREMENT_KEYS } from "@/lib/constants";
 
-const TODAY = new Date().toISOString().split("T")[0];
+const TODAY = getTodayDate();
 
-const MEASUREMENT_LABELS: { key: keyof BodyMeasurements; label: string }[] = [
-  { key: "neck", label: "Neck" },
-  { key: "waist", label: "Waist" },
-  { key: "hips", label: "Hips" },
-];
+const headers = ["Measurement", "Last entry", "Today"];
 
 export default function CheckInPage() {
   const checkIns = useTrackerStore((s) => s.checkIns);
@@ -25,7 +25,7 @@ export default function CheckInPage() {
     .filter((c) => c.date < TODAY)
     .sort((a, b) => b.date.localeCompare(a.date))[0];
 
-  const [weight, setWeight] = useState(todayEntry?.weight || 0);
+  const [weight, setWeight] = useState(todayEntry?.weight ?? 0);
   const [measurements, setMeasurements] = useState<
     Record<keyof BodyMeasurements, string>
   >({
@@ -35,23 +35,21 @@ export default function CheckInPage() {
   });
 
   function handleSave() {
-    addCheckIn({
-      date: TODAY,
-      weight,
-      measurements: {
-        neck: measurements.neck ? Number(measurements.neck) : undefined,
-        waist: measurements.waist ? Number(measurements.waist) : undefined,
-        hips: measurements.hips ? Number(measurements.hips) : undefined,
-      },
-    });
+    addCheckIn(addCheckInMeasurements({ date: TODAY, weight, measurements }));
   }
-
-  const headers = ["Measurement", "Last entry", "Today"];
 
   return (
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="mx-auto max-w-lg space-y-4">
-        <Headline title="Check-in" variant="h1" />
+        <div className="flex items-center justify-between">
+          <Headline title="Check-in" variant="h1" />
+          <Link
+            href="/measurements/edit"
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Edit history
+          </Link>
+        </div>
 
         {/* Weight */}
         <CardSection>
@@ -90,9 +88,9 @@ export default function CheckInPage() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {MEASUREMENT_LABELS.map(({ key, label }) => (
+              {MEASUREMENT_KEYS.map((key) => (
                 <tr key={key}>
-                  <td className="py-2 text-gray-500">{label}</td>
+                  <td className="py-2 text-gray-500">{key[0].toUpperCase() + key.slice(1)}</td>
                   <td className="py-2 text-gray-400">
                     {lastEntry?.measurements[key] ?? "—"}
                   </td>
@@ -118,7 +116,7 @@ export default function CheckInPage() {
           </table>
         </CardSection>
 
-        <Button onClick={handleSave} className="w-full ">
+        <Button onClick={handleSave} className="w-full">
           Save
         </Button>
       </div>

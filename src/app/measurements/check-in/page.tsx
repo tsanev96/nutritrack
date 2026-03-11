@@ -6,11 +6,9 @@ import { useTrackerStore } from "@/store/useTrackerStore";
 import Headline from "@/components/common/Headline";
 import CardSection from "@/components/common/CardSection";
 import Button from "@/components/common/Button";
-import type { BodyMeasurements } from "@/types";
 import { getTodayDate } from "@/utils/dates";
 import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/lib/constants";
-import { get } from "http";
 
 const headers = ["Measurement", "Last entry", "Today"];
 

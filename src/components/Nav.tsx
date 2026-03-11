@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { supabase } from "@/lib/supabase";
+import { useAuthUser } from "@/components/AuthProvider";
 
 const SECTIONS = [
   {
@@ -25,14 +27,18 @@ const SECTIONS = [
 
 export default function Nav() {
   const pathname = usePathname();
+  const { user } = useAuthUser();
 
   const activeSection =
     SECTIONS.find((s) => s.links.some((l) => l.href === pathname)) ??
     SECTIONS[0];
 
+  // Don't show nav on auth pages
+  if (pathname.startsWith("/auth")) return null;
+
   return (
     <nav className="border-b bg-white">
-      {/* Top row: logo + section tabs */}
+      {/* Top row: logo + section tabs + user */}
       <div className="mx-auto flex max-w-4xl items-center gap-6 px-6 py-3">
         <span className="font-semibold text-gray-900">CalTracker</span>
         <div className="flex gap-1">
@@ -53,6 +59,19 @@ export default function Nav() {
             );
           })}
         </div>
+
+        {/* User email + logout, pushed to the right */}
+        {user && (
+          <div className="ml-auto flex items-center gap-3">
+            <span className="text-xs text-gray-400">{user.email}</span>
+            <button
+              onClick={() => supabase.auth.signOut()}
+              className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+            >
+              Sign out
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Bottom row: sub-links for active section */}

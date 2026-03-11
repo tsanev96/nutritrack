@@ -6,7 +6,7 @@ type Props<T extends string | number> = Readonly<{
   onChange: (value: T) => void;
   error?: string;
   placeholder?: string;
-  type: "text" | "number";
+  type: "text" | "number" | "email" | "password";
   required?: boolean;
   disabled?: boolean;
 }>;

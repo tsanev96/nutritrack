@@ -8,8 +8,9 @@ import CardSection from "@/components/common/CardSection";
 import Button from "@/components/common/Button";
 import type { BodyMeasurements } from "@/types";
 import { getTodayDate } from "@/utils/dates";
-import { addCheckInMeasurements } from "@/utils/checkIn";
+import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/lib/constants";
+import { get } from "http";
 
 const headers = ["Measurement", "Last entry", "Today"];
 
@@ -27,23 +28,15 @@ export default function CheckInPage() {
     .sort((a, b) => b.date.localeCompare(a.date))[0];
 
   const [weight, setWeight] = useState(existingEntry?.weight ?? 0);
-  const [measurements, setMeasurements] = useState<
-    Record<keyof BodyMeasurements, string>
-  >({
-    neck: existingEntry?.measurements.neck?.toString() ?? "",
-    waist: existingEntry?.measurements.waist?.toString() ?? "",
-    hips: existingEntry?.measurements.hips?.toString() ?? "",
-  });
+  const [measurements, setMeasurements] = useState(
+    getMeasurementsValues(existingEntry),
+  );
 
   function handleDateChange(newDate: string) {
     setDate(newDate);
     const entry = checkIns.find((c) => c.date === newDate);
     setWeight(entry?.weight ?? 0);
-    setMeasurements({
-      neck: entry?.measurements.neck?.toString() ?? "",
-      waist: entry?.measurements.waist?.toString() ?? "",
-      hips: entry?.measurements.hips?.toString() ?? "",
-    });
+    setMeasurements(getMeasurementsValues(entry));
   }
 
   function handleSave() {
@@ -113,7 +106,9 @@ export default function CheckInPage() {
             <tbody className="divide-y">
               {MEASUREMENT_KEYS.map((key) => (
                 <tr key={key}>
-                  <td className="py-2 text-gray-500">{key[0].toUpperCase() + key.slice(1)}</td>
+                  <td className="py-2 text-gray-500">
+                    {key[0].toUpperCase() + key.slice(1)}
+                  </td>
                   <td className="py-2 text-gray-400">
                     {lastEntry?.measurements[key] ?? "—"}
                   </td>

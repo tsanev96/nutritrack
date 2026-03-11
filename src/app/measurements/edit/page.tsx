@@ -7,7 +7,7 @@ import type { BodyMeasurements, CheckIn } from "@/types";
 import Headline from "@/components/common/Headline";
 import CardSection from "@/components/common/CardSection";
 import Button from "@/components/common/Button";
-import { addCheckInMeasurements } from "@/utils/checkIn";
+import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/lib/constants";
 
 type EditRowProps = Readonly<{
@@ -18,13 +18,9 @@ type EditRowProps = Readonly<{
 
 function EditRow({ checkIn, weightUnit, onSave }: EditRowProps) {
   const [weight, setWeight] = useState(checkIn.weight ?? 0);
-  const [measurements, setMeasurements] = useState<
-    Record<keyof BodyMeasurements, string>
-  >({
-    neck: checkIn.measurements.neck?.toString() ?? "",
-    waist: checkIn.measurements.waist?.toString() ?? "",
-    hips: checkIn.measurements.hips?.toString() ?? "",
-  });
+  const [measurements, setMeasurements] = useState(
+    getMeasurementsValues(checkIn),
+  );
 
   function handleSave() {
     onSave(

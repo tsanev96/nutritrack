@@ -21,3 +21,14 @@ export function addCheckInMeasurements({
     },
   };
 }
+
+export function getMeasurementsValues(
+  checkIn: CheckIn | undefined,
+): Record<keyof BodyMeasurements, string> {
+  const { hips, neck, waist } = checkIn?.measurements || {};
+  return {
+    neck: neck?.toString() ?? "",
+    waist: waist?.toString() ?? "",
+    hips: hips?.toString() ?? "",
+  };
+}

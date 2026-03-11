@@ -2,10 +2,15 @@
 
 import { selectDailyCalories, selectConsumedCalories } from "@/store/selectors";
 import { useTrackerStore } from "@/store/useTrackerStore";
+import { formatDateLabel } from "@/utils/dates";
 
-export default function DailySummary() {
+type Props = Readonly<{
+  date: string;
+}>;
+
+export default function DailySummary({ date }: Props) {
   const dailyGoal = useTrackerStore(selectDailyCalories);
-  const totalCalories = useTrackerStore(selectConsumedCalories);
+  const totalCalories = useTrackerStore(selectConsumedCalories(date));
 
   const progress = Math.min(100, Math.round((totalCalories / dailyGoal) * 100));
 
@@ -13,8 +18,10 @@ export default function DailySummary() {
     <section className="mb-6 rounded-lg bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500">Today</p>
-          <p className="text-lg font-medium">{totalCalories} kcal</p>
+          <p className="text-sm text-gray-700">{formatDateLabel(date)}</p>
+          <p className="text-lg font-medium text-gray-600">
+            {totalCalories} kcal
+          </p>
         </div>
         <div className="w-1/2">
           <div className="h-3 w-full rounded-full bg-gray-200">

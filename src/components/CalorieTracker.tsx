@@ -1,24 +1,33 @@
 "use client";
 
+import { useState } from "react";
 import { MEALS } from "@/lib/constants";
 import DailySummary from "./DailySummary";
-// import GoalInput from "./GoalInput";
 import MealCard from "./MealCard";
+import { getTodayDate } from "@/utils/dates";
 
 export default function CalorieTracker() {
+  const [date, setDate] = useState(getTodayDate());
+
   return (
     <div className="min-h-screen bg-slate-500 p-6">
       <div className="mx-auto max-w-4xl">
         <header className="mb-6 flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Calories Tracker</h1>
-          {/* <GoalInput /> todo */}
+          <input
+            type="date"
+            value={date}
+            max={getTodayDate()}
+            onChange={(e) => setDate(e.target.value)}
+            className="rounded-md border px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+          />
         </header>
 
-        <DailySummary />
+        <DailySummary date={date} />
 
         <div className="grid gap-4 sm:grid-cols-2">
           {MEALS.map((meal) => (
-            <MealCard key={meal} meal={meal} />
+            <MealCard key={meal} meal={meal} date={date} />
           ))}
         </div>
       </div>

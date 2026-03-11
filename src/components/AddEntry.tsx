@@ -7,13 +7,13 @@ import FoodSearch from "./FoodSearch";
 import MacroInputs from "./MacroInputs";
 import { calcCalories } from "@/utils/calculateCalories";
 import { FoodSuggestion } from "@/lib/foodApi";
-
 type Props = Readonly<{
   meal: Meal;
+  date: string;
   onClose: () => void;
 }>;
 
-export default function AddEntry({ meal, onClose }: Props) {
+export default function AddEntry({ meal, date, onClose }: Props) {
   const addEntry = useTrackerStore((s) => s.addEntry);
   const [foodName, setFoodName] = useState("");
   const [selectedFood, setSelectedFood] = useState<FoodSuggestion | null>(null);
@@ -54,14 +54,14 @@ export default function AddEntry({ meal, onClose }: Props) {
         onSubmit={(e) => {
           e.preventDefault();
           if (!validate()) return;
-          addEntry(meal, {
+          addEntry({date, meal, entry:{
             id: String(Date.now()),
             name: foodName.trim(),
             calories: calcCalories(macros),
             fats: macros.fats,
             protein: macros.protein,
             carbs: macros.carbs,
-          });
+          }});
           onClose();
         }}
       >

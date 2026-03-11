@@ -4,16 +4,21 @@ import type { Meal } from "@/types";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import { useState } from "react";
 import AddEntry from "./AddEntry";
+import { useShallow } from "zustand/shallow";
 
-type Props = Readonly<{ meal: Meal }>;
+type Props = Readonly<{ meal: Meal; date: string }>;
 
-export default function MealCard({ meal }: Props) {
+export default function MealCard({ meal, date }: Props) {
   const [showAddForm, setShowAddForm] = useState(false);
-  const entries = useTrackerStore((s) => s.entries[meal]);
+  const entries = useTrackerStore(
+    useShallow((s) => s.logs[date]?.[meal] ?? []),
+  );
   const removeEntry = useTrackerStore((s) => s.removeEntry);
 
   if (showAddForm) {
-    return <AddEntry meal={meal} onClose={() => setShowAddForm(false)} />;
+    return (
+      <AddEntry meal={meal} date={date} onClose={() => setShowAddForm(false)} />
+    );
   }
 
   return (
@@ -43,7 +48,7 @@ export default function MealCard({ meal }: Props) {
               </div>
             </div>
             <button
-              onClick={() => removeEntry(meal, e.id)}
+              onClick={() => removeEntry({ date, meal, id: e.id })}
               className="text-sm text-red-600 hover:underline"
             >
               Remove

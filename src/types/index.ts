@@ -9,8 +9,6 @@ export type Entry = {
   fats?: number;
 };
 
-export type DayLog = Record<Meal, Entry[]>;
-
 export type Macros = {
   protein: number;
   carbs: number;
@@ -71,8 +69,11 @@ export type CheckIn = {
   measurements: BodyMeasurements;
 };
 
+export type DayLog = Record<Meal, Entry[]>;
+
 export type TrackerState = {
-  entries: DayLog;
+  /** date (YYYY-MM-DD) */
+  logs: Record<string, DayLog>;
   macroGoals: Macros;
   microNutrientGoals: MicroNutrients;
   fitnessGoals: FitnessGoals;
@@ -81,8 +82,8 @@ export type TrackerState = {
 };
 
 export type TrackerActions = {
-  addEntry: (meal: Meal, entry: Entry) => void;
-  removeEntry: (meal: Meal, id: string) => void;
+  addEntry: (args: { date: string; meal: Meal; entry: Entry }) => void;
+  removeEntry: (args: { date: string; meal: Meal; id: string }) => void;
   setMacroGoals: (goals: Macros) => void;
   setMicroNutrientGoals: (goals: MicroNutrients) => void;
   setFitnessGoals: (goals: FitnessGoals) => void;

@@ -1,14 +1,19 @@
 "use client";
 
+import { useShallow } from "zustand/shallow";
 import { useTrackerStore } from "@/store/useTrackerStore";
+import { MEALS } from "@/lib/constants";
+import { getTodayDate } from "@/utils/dates";
 import Rows from "./Rows";
 import CardSection from "@/components/common/CardSection";
 import HeadlineWrapper from "./HeadlineWrapper";
 
 export default function MealsCalories() {
-  const meals = useTrackerStore((s) => s.entries);
+  const today = getTodayDate();
+  const dayLog = useTrackerStore(useShallow((s) => s.logs[today] ?? {}));
 
-  const rows = Object.entries(meals).map(([meal, entries]) => {
+  const rows = MEALS.map((meal) => {
+    const entries = dayLog[meal] ?? [];
     const calories = entries.reduce((sum, entry) => sum + entry.calories, 0);
     return { label: meal, value: `${calories} kcal` };
   });

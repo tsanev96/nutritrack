@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 import type {
   TrackerState,
   TrackerActions,
+  DayLog,
   Meal,
   Entry,
   Macros,
@@ -17,7 +18,7 @@ import {
   STORAGE_KEY,
 } from "@/lib/constants";
 
-const emptyDayLog = (): TrackerState["entries"] => ({
+const emptyDayLog = (): DayLog => ({
   breakfast: [],
   lunch: [],
   dinner: [],
@@ -27,27 +28,37 @@ const emptyDayLog = (): TrackerState["entries"] => ({
 export const useTrackerStore = create<TrackerState & TrackerActions>()(
   persist(
     (set) => ({
-      entries: emptyDayLog(),
+      logs: {},
       macroGoals: DEFAULT_MACRO_GOALS,
       microNutrientGoals: DEFAULT_MICRO_GOALS,
       fitnessGoals: DEFAULT_FITNESS_GOALS,
       checkIns: [],
 
-      addEntry: (meal: Meal, entry: Entry) =>
-        set((state) => ({
-          entries: {
-            ...state.entries,
-            [meal]: [...state.entries[meal], entry],
-          },
-        })),
+      addEntry: ({ date, meal, entry }) =>
+        set((state) => {
+          const dayLog = state.logs[date] ?? emptyDayLog();
+          return {
+            logs: {
+              ...state.logs,
+              [date]: { ...dayLog, [meal]: [...dayLog[meal], entry] },
+            },
+          };
+        }),
 
-      removeEntry: (meal: Meal, id: string) =>
-        set((state) => ({
-          entries: {
-            ...state.entries,
-            [meal]: state.entries[meal].filter((e) => e.id !== id),
-          },
-        })),
+      removeEntry: ({ date, meal, id }) =>
+        set((state) => {
+          const dayLog = state.logs[date];
+          if (!dayLog) return state;
+          return {
+            logs: {
+              ...state.logs,
+              [date]: {
+                ...dayLog,
+                [meal]: dayLog[meal].filter((e) => e.id !== id),
+              },
+            },
+          };
+        }),
 
       setMacroGoals: (goals: Macros) => set({ macroGoals: goals }),
       setMicroNutrientGoals: (goals: MicroNutrients) =>
@@ -61,6 +72,16 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
           ],
         })),
     }),
-    { name: STORAGE_KEY, version: 2 },
+    {
+      name: STORAGE_KEY,
+      version: 3,
+      migrate: () => ({
+        logs: {},
+        macroGoals: DEFAULT_MACRO_GOALS,
+        microNutrientGoals: DEFAULT_MICRO_GOALS,
+        fitnessGoals: DEFAULT_FITNESS_GOALS,
+        checkIns: [],
+      }),
+    },
   ),
 );

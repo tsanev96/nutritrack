@@ -11,8 +11,6 @@ import { getTodayDate } from "@/utils/dates";
 import { addCheckInMeasurements } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/lib/constants";
 
-const TODAY = getTodayDate();
-
 const headers = ["Measurement", "Last entry", "Today"];
 
 export default function CheckInPage() {
@@ -20,22 +18,38 @@ export default function CheckInPage() {
   const addCheckIn = useTrackerStore((s) => s.addCheckIn);
   const weightUnit = useTrackerStore((s) => s.fitnessGoals.weightUnit);
 
-  const todayEntry = checkIns.find((c) => c.date === TODAY);
+  const [date, setDate] = useState(getTodayDate());
+  const [saved, setSaved] = useState(false);
+
+  const existingEntry = checkIns.find((c) => c.date === date);
   const lastEntry = [...checkIns]
-    .filter((c) => c.date < TODAY)
+    .filter((c) => c.date < date)
     .sort((a, b) => b.date.localeCompare(a.date))[0];
 
-  const [weight, setWeight] = useState(todayEntry?.weight ?? 0);
+  const [weight, setWeight] = useState(existingEntry?.weight ?? 0);
   const [measurements, setMeasurements] = useState<
     Record<keyof BodyMeasurements, string>
   >({
-    neck: todayEntry?.measurements.neck?.toString() ?? "",
-    waist: todayEntry?.measurements.waist?.toString() ?? "",
-    hips: todayEntry?.measurements.hips?.toString() ?? "",
+    neck: existingEntry?.measurements.neck?.toString() ?? "",
+    waist: existingEntry?.measurements.waist?.toString() ?? "",
+    hips: existingEntry?.measurements.hips?.toString() ?? "",
   });
 
+  function handleDateChange(newDate: string) {
+    setDate(newDate);
+    const entry = checkIns.find((c) => c.date === newDate);
+    setWeight(entry?.weight ?? 0);
+    setMeasurements({
+      neck: entry?.measurements.neck?.toString() ?? "",
+      waist: entry?.measurements.waist?.toString() ?? "",
+      hips: entry?.measurements.hips?.toString() ?? "",
+    });
+  }
+
   function handleSave() {
-    addCheckIn(addCheckInMeasurements({ date: TODAY, weight, measurements }));
+    addCheckIn(addCheckInMeasurements({ date, weight, measurements }));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   }
 
   return (
@@ -43,12 +57,21 @@ export default function CheckInPage() {
       <div className="mx-auto max-w-lg space-y-4">
         <div className="flex items-center justify-between">
           <Headline title="Check-in" variant="h1" />
-          <Link
-            href="/measurements/edit"
-            className="text-sm font-medium text-primary hover:underline"
-          >
-            Edit history
-          </Link>
+          <div className="flex items-center gap-3">
+            <input
+              type="date"
+              value={date}
+              max={getTodayDate()}
+              onChange={(e) => handleDateChange(e.target.value)}
+              className="rounded-md border px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <Link
+              href="/measurements/edit"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Edit history
+            </Link>
+          </div>
         </div>
 
         {/* Weight */}
@@ -119,6 +142,12 @@ export default function CheckInPage() {
         <Button onClick={handleSave} className="w-full">
           Save
         </Button>
+
+        {saved && (
+          <p className="text-center text-sm font-medium text-green-600">
+            Check-in saved!
+          </p>
+        )}
       </div>
     </div>
   );

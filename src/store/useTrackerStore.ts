@@ -1,11 +1,8 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type {
   TrackerState,
   TrackerActions,
   DayLog,
-  Meal,
-  Entry,
   Macros,
   MicroNutrients,
   FitnessGoals,
@@ -15,8 +12,15 @@ import {
   DEFAULT_MACRO_GOALS,
   DEFAULT_MICRO_GOALS,
   DEFAULT_FITNESS_GOALS,
-  STORAGE_KEY,
 } from "@/lib/constants";
+import {
+  insertFoodLog,
+  deleteFoodLog,
+  upsertMacroGoals,
+  upsertMicroGoals,
+  upsertFitnessGoals,
+  upsertCheckIn,
+} from "@/lib/db";
 
 const emptyDayLog = (): DayLog => ({
   breakfast: [],
@@ -25,63 +29,83 @@ const emptyDayLog = (): DayLog => ({
   snacks: [],
 });
 
+// Each action does two things:
+//   1. Updates local state instantly (so the UI feels fast)
+//   2. Fires a background write to Supabase (fire-and-forget)
+// The background write uses `get()` to read the current userId without
+// needing it passed in as an argument every time.
 export const useTrackerStore = create<TrackerState & TrackerActions>()(
-  persist(
-    (set) => ({
-      logs: {},
-      macroGoals: DEFAULT_MACRO_GOALS,
-      microNutrientGoals: DEFAULT_MICRO_GOALS,
-      fitnessGoals: DEFAULT_FITNESS_GOALS,
-      checkIns: [],
+  (set, get) => ({
+    userId: null,
+    logs: {},
+    macroGoals: DEFAULT_MACRO_GOALS,
+    microNutrientGoals: DEFAULT_MICRO_GOALS,
+    fitnessGoals: DEFAULT_FITNESS_GOALS,
+    checkIns: [],
 
-      addEntry: ({ date, meal, entry }) =>
-        set((state) => {
-          const dayLog = state.logs[date] ?? emptyDayLog();
-          return {
-            logs: {
-              ...state.logs,
-              [date]: { ...dayLog, [meal]: [...dayLog[meal], entry] },
-            },
-          };
-        }),
+    setUserId: (userId) => set({ userId }),
 
-      removeEntry: ({ date, meal, id }) =>
-        set((state) => {
-          const dayLog = state.logs[date];
-          if (!dayLog) return state;
-          return {
-            logs: {
-              ...state.logs,
-              [date]: {
-                ...dayLog,
-                [meal]: dayLog[meal].filter((e) => e.id !== id),
-              },
-            },
-          };
-        }),
+    // Called once on login with all data fetched from Supabase
+    hydrate: (payload) => set(payload),
 
-      setMacroGoals: (goals: Macros) => set({ macroGoals: goals }),
-      setMicroNutrientGoals: (goals: MicroNutrients) =>
-        set({ microNutrientGoals: goals }),
-      setFitnessGoals: (goals: FitnessGoals) => set({ fitnessGoals: goals }),
-      addCheckIn: (checkIn: CheckIn) =>
-        set((state) => ({
-          checkIns: [
-            ...state.checkIns.filter((c) => c.date !== checkIn.date),
-            checkIn,
-          ],
-        })),
-    }),
-    {
-      name: STORAGE_KEY,
-      version: 3,
-      migrate: () => ({
-        logs: {},
-        macroGoals: DEFAULT_MACRO_GOALS,
-        microNutrientGoals: DEFAULT_MICRO_GOALS,
-        fitnessGoals: DEFAULT_FITNESS_GOALS,
-        checkIns: [],
-      }),
+    addEntry: ({ date, meal, entry }) => {
+      set((state) => {
+        const dayLog = state.logs[date] ?? emptyDayLog();
+        return {
+          logs: {
+            ...state.logs,
+            [date]: { ...dayLog, [meal]: [...dayLog[meal], entry] },
+          },
+        };
+      });
+      const { userId } = get();
+      if (userId) insertFoodLog({ userId, date, meal, entry });
     },
-  ),
+
+    removeEntry: ({ date, meal, id }) => {
+      set((state) => {
+        const dayLog = state.logs[date];
+        if (!dayLog) return state;
+        return {
+          logs: {
+            ...state.logs,
+            [date]: {
+              ...dayLog,
+              [meal]: dayLog[meal].filter((e) => e.id !== id),
+            },
+          },
+        };
+      });
+      deleteFoodLog(id);
+    },
+
+    setMacroGoals: (goals: Macros) => {
+      set({ macroGoals: goals });
+      const { userId } = get();
+      if (userId) upsertMacroGoals(userId, goals);
+    },
+
+    setMicroNutrientGoals: (goals: MicroNutrients) => {
+      set({ microNutrientGoals: goals });
+      const { userId } = get();
+      if (userId) upsertMicroGoals(userId, goals);
+    },
+
+    setFitnessGoals: (goals: FitnessGoals) => {
+      set({ fitnessGoals: goals });
+      const { userId } = get();
+      if (userId) upsertFitnessGoals(userId, goals);
+    },
+
+    addCheckIn: (checkIn: CheckIn) => {
+      set((state) => ({
+        checkIns: [
+          ...state.checkIns.filter((c) => c.date !== checkIn.date),
+          checkIn,
+        ],
+      }));
+      const { userId } = get();
+      if (userId) upsertCheckIn(userId, checkIn);
+    },
+  }),
 );

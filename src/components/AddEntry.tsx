@@ -55,7 +55,7 @@ export default function AddEntry({ meal, date, onClose }: Props) {
           e.preventDefault();
           if (!validate()) return;
           addEntry({date, meal, entry:{
-            id: String(Date.now()),
+            id: crypto.randomUUID(),
             name: foodName.trim(),
             calories: calcCalories(macros),
             fats: macros.fats,

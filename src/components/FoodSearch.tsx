@@ -42,7 +42,6 @@ export default function FoodSearch({
     }
   }
 
-  console.log("food api: ", suggestions);
   return (
     <div>
       <label

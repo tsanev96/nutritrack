@@ -72,6 +72,7 @@ export type CheckIn = {
 export type DayLog = Record<Meal, Entry[]>;
 
 export type TrackerState = {
+  userId: string | null;
   /** date (YYYY-MM-DD) */
   logs: Record<string, DayLog>;
   macroGoals: Macros;
@@ -81,7 +82,12 @@ export type TrackerState = {
   checkIns: CheckIn[];
 };
 
+// The shape passed to hydrate() — everything except userId
+export type HydratePayload = Omit<TrackerState, "userId">;
+
 export type TrackerActions = {
+  setUserId: (id: string | null) => void;
+  hydrate: (payload: HydratePayload) => void;
   addEntry: (args: { date: string; meal: Meal; entry: Entry }) => void;
   removeEntry: (args: { date: string; meal: Meal; id: string }) => void;
   setMacroGoals: (goals: Macros) => void;

@@ -1,3 +1,7 @@
+// This file is the bridge between your app and the Supabase database.
+// Every function here does exactly one thing: read or write data for a specific user.
+// All functions use the user's ID to ensure they only touch their own data.
+
 import { supabase } from "./supabase";
 import type {
   Macros,
@@ -14,12 +18,8 @@ import {
   DEFAULT_FITNESS_GOALS,
 } from "./constants";
 
-// ── Food Logs ──────────────────────────────────────────────────────────────
-
-/**
- * Fetches all food entries for a user and groups them by date and meal type.
- * The DB stores one row per entry (flat). This re-shapes them into:
- * `{ "2024-01-01": { breakfast: [...], lunch: [...], ... } }`
+/**  Food logs are stored as flat rows (one row per food entry).
+ * We fetch them all and re-group them into { "2024-01-01": { breakfast: [], ... } }
  */
 export async function fetchFoodLogs(
   userId: string,
@@ -48,7 +48,7 @@ export async function fetchFoodLogs(
   return logs;
 }
 
-type InsertFoodLogParams = {
+type UpsertFoodLogParams = {
   userId: string;
   date: string;
   meal: Meal;
@@ -64,9 +64,9 @@ export async function insertFoodLog({
   entry,
   userId,
   meal,
-}: InsertFoodLogParams) {
+}: UpsertFoodLogParams) {
   const { error } = await supabase.from("food_logs").insert({
-    id: entry.id,
+    id: entry.id, // UUID generated client-side
     user_id: userId,
     date,
     meal_type: meal,
@@ -87,12 +87,7 @@ export async function deleteFoodLog(id: string) {
   if (error) console.error("deleteFoodLog:", error.message);
 }
 
-// ── Macro Goals ────────────────────────────────────────────────────────────
-
-/**
- * Fetches the user's macro goals (protein, carbs, fats).
- * Returns defaults if the user hasn't saved any yet.
- */
+/** Each user has at most one row. If none exists yet, we return the defaults/ */
 export async function fetchMacroGoals(userId: string): Promise<Macros> {
   const { data } = await supabase
     .from("macro_goals")
@@ -103,11 +98,8 @@ export async function fetchMacroGoals(userId: string): Promise<Macros> {
   return data ?? DEFAULT_MACRO_GOALS;
 }
 
-/**
- * Saves the user's macro goals.
- * Upsert = insert on first save, update on every save after.
- * Each user has exactly one row, identified by `user_id`.
- */
+/** "upsert" = insert if the row doesn't exist, update if it does.
+ * The conflict is on user_id — each user has exactly one row. */
 export async function upsertMacroGoals(userId: string, goals: Macros) {
   const { error } = await supabase.from("macro_goals").upsert(
     {
@@ -122,17 +114,10 @@ export async function upsertMacroGoals(userId: string, goals: Macros) {
   if (error) console.error("upsertMacroGoals:", error.message);
 }
 
-// ── Micro Nutrient Goals ───────────────────────────────────────────────────
-
-/**
- * Fetches the user's micronutrient goals.
- * The DB stores plain numbers (e.g. `20`). This reconstructs the full typed
- * object with units (e.g. `{ value: 20, unit: "g" }`) using defaults for units.
- * Returns defaults if the user hasn't saved any yet.
+/** The DB stores just the numbers (e.g. 20), the TypeScript type stores { value: 20, unit: "g" }.
+ * So when we read from DB, we reconstruct the full typed object using defaults for units.
  */
-export async function fetchMicroGoals(
-  userId: string,
-): Promise<MicroNutrients> {
+export async function fetchMicroGoals(userId: string): Promise<MicroNutrients> {
   const { data } = await supabase
     .from("micro_nutrient_goals")
     .select("*")
@@ -141,52 +126,93 @@ export async function fetchMicroGoals(
 
   if (!data) return DEFAULT_MICRO_GOALS;
 
+  const {
+    saturated_fat,
+    polyunsaturated_fat,
+    monounsaturated_fat,
+    trans_fat,
+    fiber,
+    sugar,
+    cholesterol,
+    sodium,
+    potassium,
+    calcium,
+    iron,
+    vitamin_a,
+    vitamin_c,
+    vitamin_d,
+    vitamin_e,
+    vitamin_k,
+  } = data;
+
   const d = DEFAULT_MICRO_GOALS;
   return {
-    saturatedFat: { value: data.saturated_fat ?? d.saturatedFat.value, unit: "g" },
-    polyunsaturatedFat: { value: data.polyunsaturated_fat ?? d.polyunsaturatedFat.value, unit: "g" },
-    monounsaturatedFat: { value: data.monounsaturated_fat ?? d.monounsaturatedFat.value, unit: "g" },
-    transFat: { value: data.trans_fat ?? d.transFat.value, unit: "g" },
-    fiber: { value: data.fiber ?? d.fiber.value, unit: "g" },
-    sugar: { value: data.sugar ?? d.sugar.value, unit: "g" },
-    cholesterol: { value: data.cholesterol ?? d.cholesterol.value, unit: "mg" },
-    sodium: { value: data.sodium ?? d.sodium.value, unit: "mg" },
-    potassium: { value: data.potassium ?? d.potassium.value, unit: "mg" },
-    calcium: { value: data.calcium ?? d.calcium.value, unit: "mg" },
-    iron: { value: data.iron ?? d.iron.value, unit: "mg" },
-    vitaminA: { value: data.vitamin_a ?? d.vitaminA.value, unit: "mcg" },
-    vitaminC: { value: data.vitamin_c ?? d.vitaminC.value, unit: "mg" },
-    vitaminD: { value: data.vitamin_d ?? d.vitaminD.value, unit: "mcg" },
-    vitaminE: { value: data.vitamin_e ?? d.vitaminE.value, unit: "mg" },
-    vitaminK: { value: data.vitamin_k ?? d.vitaminK.value, unit: "mcg" },
+    saturatedFat: {
+      value: saturated_fat ?? d.saturatedFat.value,
+      unit: "g",
+    },
+    polyunsaturatedFat: {
+      value: polyunsaturated_fat ?? d.polyunsaturatedFat.value,
+      unit: "g",
+    },
+    monounsaturatedFat: {
+      value: monounsaturated_fat ?? d.monounsaturatedFat.value,
+      unit: "g",
+    },
+    transFat: { value: trans_fat ?? d.transFat.value, unit: "g" },
+    fiber: { value: fiber ?? d.fiber.value, unit: "g" },
+    sugar: { value: sugar ?? d.sugar.value, unit: "g" },
+    cholesterol: { value: cholesterol ?? d.cholesterol.value, unit: "mg" },
+    sodium: { value: sodium ?? d.sodium.value, unit: "mg" },
+    potassium: { value: potassium ?? d.potassium.value, unit: "mg" },
+    calcium: { value: calcium ?? d.calcium.value, unit: "mg" },
+    iron: { value: iron ?? d.iron.value, unit: "mg" },
+    vitaminA: { value: vitamin_a ?? d.vitaminA.value, unit: "mcg" },
+    vitaminC: { value: vitamin_c ?? d.vitaminC.value, unit: "mg" },
+    vitaminD: { value: vitamin_d ?? d.vitaminD.value, unit: "mcg" },
+    vitaminE: { value: vitamin_e ?? d.vitaminE.value, unit: "mg" },
+    vitaminK: { value: vitamin_k ?? d.vitaminK.value, unit: "mcg" },
   };
 }
 
-/**
- * Saves the user's micronutrient goals.
- * Maps camelCase TypeScript keys to snake_case DB column names.
- * Only the numeric value is stored — units are fixed per nutrient.
- */
 export async function upsertMicroGoals(userId: string, goals: MicroNutrients) {
+  const {
+    calcium,
+    cholesterol,
+    fiber,
+    iron,
+    monounsaturatedFat,
+    polyunsaturatedFat,
+    potassium,
+    saturatedFat,
+    transFat,
+    vitaminA,
+    vitaminC,
+    vitaminD,
+    vitaminE,
+    vitaminK,
+    sugar,
+    sodium,
+  } = goals;
   const { error } = await supabase.from("micro_nutrient_goals").upsert(
     {
       user_id: userId,
-      saturated_fat: goals.saturatedFat.value,
-      polyunsaturated_fat: goals.polyunsaturatedFat.value,
-      monounsaturated_fat: goals.monounsaturatedFat.value,
-      trans_fat: goals.transFat.value,
-      fiber: goals.fiber.value,
-      sugar: goals.sugar.value,
-      cholesterol: goals.cholesterol.value,
-      sodium: goals.sodium.value,
-      potassium: goals.potassium.value,
-      calcium: goals.calcium.value,
-      iron: goals.iron.value,
-      vitamin_a: goals.vitaminA.value,
-      vitamin_c: goals.vitaminC.value,
-      vitamin_d: goals.vitaminD.value,
-      vitamin_e: goals.vitaminE.value,
-      vitamin_k: goals.vitaminK.value,
+      saturated_fat: saturatedFat.value,
+      polyunsaturated_fat: polyunsaturatedFat.value,
+      monounsaturated_fat: monounsaturatedFat.value,
+      trans_fat: transFat.value,
+      fiber: fiber.value,
+      sugar: sugar.value,
+      cholesterol: cholesterol.value,
+      sodium: sodium.value,
+      potassium: potassium.value,
+      calcium: calcium.value,
+      iron: iron.value,
+      vitamin_a: vitaminA.value,
+      vitamin_c: vitaminC.value,
+      vitamin_d: vitaminD.value,
+      vitamin_e: vitaminE.value,
+      vitamin_k: vitaminK.value,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id" },
@@ -194,15 +220,11 @@ export async function upsertMicroGoals(userId: string, goals: MicroNutrients) {
   if (error) console.error("upsertMicroGoals:", error.message);
 }
 
-// ── Fitness Goals ──────────────────────────────────────────────────────────
-
 /**
  * Fetches the user's fitness goals (target weight, activity level, weekly goal).
  * Returns defaults if the user hasn't saved any yet.
  */
-export async function fetchFitnessGoals(
-  userId: string,
-): Promise<FitnessGoals> {
+export async function fetchFitnessGoals(userId: string): Promise<FitnessGoals> {
   const { data } = await supabase
     .from("fitness_goals")
     .select("target_weight, weight_unit, activity_level, weekly_goal")
@@ -211,18 +233,15 @@ export async function fetchFitnessGoals(
 
   if (!data) return DEFAULT_FITNESS_GOALS;
 
+  const { activity_level, target_weight, weekly_goal, weight_unit } = data;
   return {
-    targetWeight: data.target_weight,
-    weightUnit: data.weight_unit as "kg" | "lbs",
-    activityLevel: data.activity_level as FitnessGoals["activityLevel"],
-    weeklyGoal: data.weekly_goal as FitnessGoals["weeklyGoal"],
+    targetWeight: target_weight,
+    weightUnit: weight_unit as "kg" | "lbs",
+    activityLevel: activity_level as FitnessGoals["activityLevel"],
+    weeklyGoal: weekly_goal as FitnessGoals["weeklyGoal"],
   };
 }
 
-/**
- * Saves the user's fitness goals.
- * Maps camelCase TypeScript keys to snake_case DB column names.
- */
 export async function upsertFitnessGoals(userId: string, goals: FitnessGoals) {
   const { error } = await supabase.from("fitness_goals").upsert(
     {
@@ -238,8 +257,6 @@ export async function upsertFitnessGoals(userId: string, goals: FitnessGoals) {
   if (error) console.error("upsertFitnessGoals:", error.message);
 }
 
-// ── Check-ins ──────────────────────────────────────────────────────────────
-
 /**
  * Fetches all check-ins for a user (weight + body measurements per day).
  */
@@ -251,13 +268,13 @@ export async function fetchCheckIns(userId: string): Promise<CheckIn[]> {
 
   if (error) throw error;
 
-  return (data ?? []).map((row) => ({
-    date: row.date,
-    weight: row.weight ?? undefined,
+  return (data ?? []).map(({ date, waist, hips, neck, weight }) => ({
+    date,
+    weight,
     measurements: {
-      neck: row.neck ?? undefined,
-      waist: row.waist ?? undefined,
-      hips: row.hips ?? undefined,
+      neck,
+      waist,
+      hips,
     },
   }));
 }
@@ -282,12 +299,8 @@ export async function upsertCheckIn(userId: string, checkIn: CheckIn) {
   if (error) console.error("upsertCheckIn:", error.message);
 }
 
-// ── Bulk fetch ─────────────────────────────────────────────────────────────
-
-/**
- * Fetches all user data in parallel and returns it as a single object
- * ready to be passed directly to the store's `hydrate()` action.
- * To add new data types in the future, add a fetch call here.
+/** Fetches all user data in parallel. Used by DataProvider on login.
+ * If you ever need to add a new data type, add it here and in DataProvider.
  */
 export async function fetchAllUserData(userId: string) {
   const [logs, macroGoals, microNutrientGoals, fitnessGoals, checkIns] =

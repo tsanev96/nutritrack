@@ -4,7 +4,6 @@ import { useState } from "react";
 import type { Meal } from "@/types";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import FoodSearch from "./FoodSearch";
-import MacroInputs from "./MacroInputs";
 import { calcCalories } from "@/utils/calculateCalories";
 import { FoodSuggestion } from "@/lib/foodApi";
 type Props = Readonly<{
@@ -20,11 +19,6 @@ export default function AddEntry({ meal, date, onClose }: Props) {
   const [grams, setGrams] = useState(100);
   const [macros, setMacros] = useState({ fats: 0, protein: 0, carbs: 0 });
   const [errors, setErrors] = useState<{ foodName?: string }>({});
-
-  function setMacro(key: keyof typeof macros) {
-    return (val: number | string) =>
-      setMacros((prev) => ({ ...prev, [key]: Number(val) || 0 }));
-  }
 
   function handleGramsChange(g: number) {
     setGrams(g);
@@ -54,14 +48,18 @@ export default function AddEntry({ meal, date, onClose }: Props) {
         onSubmit={(e) => {
           e.preventDefault();
           if (!validate()) return;
-          addEntry({date, meal, entry:{
-            id: crypto.randomUUID(),
-            name: foodName.trim(),
-            calories: calcCalories(macros),
-            fats: macros.fats,
-            protein: macros.protein,
-            carbs: macros.carbs,
-          }});
+          addEntry({
+            date,
+            meal,
+            entry: {
+              id: crypto.randomUUID(),
+              name: foodName.trim(),
+              calories: calcCalories(macros),
+              fats: macros.fats,
+              protein: macros.protein,
+              carbs: macros.carbs,
+            },
+          });
           onClose();
         }}
       >
@@ -102,12 +100,6 @@ export default function AddEntry({ meal, date, onClose }: Props) {
             />
           </div>
         )}
-
-        <MacroInputs
-          macros={macros}
-          onChange={setMacro}
-          disabled={!!selectedFood}
-        />
 
         <div className="rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-600">
           Calculated:{" "}

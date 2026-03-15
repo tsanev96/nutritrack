@@ -4,6 +4,7 @@ import { FoodSuggestion, searchFood } from "@/lib/foodApi";
 import { useState } from "react";
 import ErrorMessage from "./common/ErrorMessage";
 import { calcCalories } from "@/utils/calculateCalories";
+import Button from "./common/Button";
 
 type Props = Readonly<{
   foodName: string;
@@ -69,14 +70,13 @@ export default function FoodSearch({
           placeholder="e.g. Roasted chicken"
           className="min-w-0 flex-1 rounded-md border px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button
-          type="button"
+        <Button
           onClick={handleSearch}
           disabled={searching || !foodName.trim()}
-          className="shrink-0 rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-slate-200 disabled:opacity-40"
+          className={`${searching || !foodName.trim() ? "cursor-none opacity-50" : ""}`}
         >
           {searching ? "..." : "Search"}
-        </button>
+        </Button>
       </div>
 
       <ErrorMessage message={foodNameError} />
@@ -87,12 +87,12 @@ export default function FoodSearch({
           <ul className="mt-1 divide-y rounded-md border bg-white shadow-sm">
             {suggestions.map((food) => (
               <li key={food.fdcId}>
-                <button
-                  type="button"
+                <Button
                   onClick={() => {
                     onFoodAdd(food);
                     setSuggestions([]);
                   }}
+                  variant="ghost"
                   className="w-full px-3 py-2 text-left hover:bg-slate-50"
                 >
                   <div className="line-clamp-1 text-sm text-gray-800">
@@ -104,7 +104,7 @@ export default function FoodSearch({
                       {calcCalories(food)} kcal per 100g
                     </span>
                   </div>
-                </button>
+                </Button>
               </li>
             ))}
           </ul>

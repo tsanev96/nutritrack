@@ -10,7 +10,7 @@ type Props = Readonly<{
 const VARIANTS = {
   primary: "bg-primary text-white hover:bg-primary-hover",
   secondary: "border text-gray-600 hover:bg-secondary-hover",
-  ghost: "text-primary hover:underline",
+  ghost: "",
 };
 
 export default function Button({
@@ -26,7 +26,7 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:opacity-40 ${VARIANTS[variant]} ${className}`}
+      className={`rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:opacity-40 ${disabled ? "cursor-none" : "cursor-pointer"} ${VARIANTS[variant]} ${className}`}
     >
       {children}
     </button>

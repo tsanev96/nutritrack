@@ -6,6 +6,8 @@ const NUTRIENT = {
   protein: 1003,
   fat: 1004,
   carbs: 1005,
+  sodium: 1093,
+  sugar: 2000,
 } as const;
 
 export type FoodSuggestion = {
@@ -14,6 +16,8 @@ export type FoodSuggestion = {
   protein: number;
   carbs: number;
   fats: number;
+  sodium: number;
+  sugar: number;
 };
 
 type RawNutrient = { nutrientId: number; value: number };
@@ -40,10 +44,12 @@ export async function searchFood(query: string): Promise<FoodSuggestion[]> {
   const data: SearchResponse = await res.json();
 
   return data.foods.map(({ description, fdcId, foodNutrients }) => ({
-    fdcId: fdcId,
-    description: description,
+    fdcId,
+    description,
     protein: getVal(foodNutrients, NUTRIENT.protein),
     carbs: getVal(foodNutrients, NUTRIENT.carbs),
     fats: getVal(foodNutrients, NUTRIENT.fat),
+    sodium: getVal(foodNutrients, NUTRIENT.sodium),
+    sugar: getVal(foodNutrients, NUTRIENT.sugar),
   }));
 }

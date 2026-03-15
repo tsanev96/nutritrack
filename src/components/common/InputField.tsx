@@ -9,6 +9,7 @@ type Props<T extends string | number> = Readonly<{
   type: "text" | "number" | "email" | "password";
   required?: boolean;
   disabled?: boolean;
+  className?: string;
 }>;
 
 export default function InputField<T extends string | number>({
@@ -20,12 +21,13 @@ export default function InputField<T extends string | number>({
   type,
   required = true,
   disabled,
+  className = "",
 }: Props<T>) {
   return (
     <div>
       <label
         htmlFor={label}
-        className="mb-1 block text-sm font-medium text-gray-700"
+        className={`${className} mb-1 block text-sm font-medium text-gray-700`}
       >
         {label} {required && <span className="text-red-500">*</span>}
       </label>

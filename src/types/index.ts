@@ -7,6 +7,15 @@ export type Entry = {
   protein?: number;
   carbs?: number;
   fats?: number;
+  sodium?: number;
+  sugar?: number;
+};
+
+export type Exercise = {
+  id: string;
+  name: string;
+  caloriesBurned: number;
+  durationMinutes?: number;
 };
 
 export type Macros = {
@@ -69,7 +78,13 @@ export type CheckIn = {
   measurements: BodyMeasurements;
 };
 
-export type DayLog = Record<Meal, Entry[]>;
+export type DayLog = {
+  breakfast: Entry[];
+  lunch: Entry[];
+  dinner: Entry[];
+  snacks: Entry[];
+  exercises: Exercise[];
+};
 
 export type TrackerState = {
   userId: string | null;
@@ -90,6 +105,8 @@ export type TrackerActions = {
   hydrate: (payload: HydratePayload) => void;
   addEntry: (args: { date: string; meal: Meal; entry: Entry }) => void;
   removeEntry: (args: { date: string; meal: Meal; id: string }) => void;
+  addExercise: (args: { date: string; exercise: Exercise }) => void;
+  removeExercise: (args: { date: string; id: string }) => void;
   setMacroGoals: (goals: Macros) => void;
   setMicroNutrientGoals: (goals: MicroNutrients) => void;
   setFitnessGoals: (goals: FitnessGoals) => void;

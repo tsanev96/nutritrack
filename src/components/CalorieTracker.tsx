@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MEALS } from "@/lib/constants";
 import DailySummary from "./DailySummary";
 import MealCard from "./MealCard";
+import ExerciseCard from "./ExerciseCard";
 import { getTodayDate } from "@/utils/dates";
 
 export default function CalorieTracker() {
@@ -25,10 +26,11 @@ export default function CalorieTracker() {
 
         <DailySummary date={date} />
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-4">
           {MEALS.map((meal) => (
             <MealCard key={meal} meal={meal} date={date} />
           ))}
+          <ExerciseCard date={date} />
         </div>
       </div>
     </div>

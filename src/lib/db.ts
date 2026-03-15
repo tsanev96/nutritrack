@@ -9,6 +9,7 @@ import type {
   FitnessGoals,
   CheckIn,
   Entry,
+  Exercise,
   Meal,
   DayLog,
 } from "@/types";
@@ -34,7 +35,13 @@ export async function fetchFoodLogs(
   const logs: Record<string, DayLog> = {};
   for (const row of data ?? []) {
     if (!logs[row.date]) {
-      logs[row.date] = { breakfast: [], lunch: [], dinner: [], snacks: [] };
+      logs[row.date] = {
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snacks: [],
+        exercises: [],
+      };
     }
     logs[row.date][row.meal_type as Meal].push({
       id: row.id,
@@ -43,6 +50,8 @@ export async function fetchFoodLogs(
       protein: row.protein ?? undefined,
       carbs: row.carbs ?? undefined,
       fats: row.fats ?? undefined,
+      sodium: row.sodium ?? undefined,
+      sugar: row.sugar ?? undefined,
     });
   }
   return logs;
@@ -66,7 +75,7 @@ export async function insertFoodLog({
   meal,
 }: UpsertFoodLogParams) {
   const { error } = await supabase.from("food_logs").insert({
-    id: entry.id, // UUID generated client-side
+    id: entry.id,
     user_id: userId,
     date,
     meal_type: meal,
@@ -75,6 +84,8 @@ export async function insertFoodLog({
     protein: entry.protein ?? null,
     carbs: entry.carbs ?? null,
     fats: entry.fats ?? null,
+    sodium: entry.sodium ?? null,
+    sugar: entry.sugar ?? null,
   });
   if (error) console.error("insertFoodLog:", error.message);
 }
@@ -85,6 +96,57 @@ export async function insertFoodLog({
 export async function deleteFoodLog(id: string) {
   const { error } = await supabase.from("food_logs").delete().eq("id", id);
   if (error) console.error("deleteFoodLog:", error.message);
+}
+
+/**
+ * Fetches exercise logs for a user, grouped by date.
+ */
+export async function fetchExerciseLogs(
+  userId: string,
+): Promise<Record<string, Exercise[]>> {
+  const { data, error } = await supabase
+    .from("exercise_logs")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (error) throw error;
+
+  const logs: Record<string, Exercise[]> = {};
+  for (const row of data ?? []) {
+    if (!logs[row.date]) logs[row.date] = [];
+    logs[row.date].push({
+      id: row.id,
+      name: row.name,
+      caloriesBurned: row.calories_burned,
+      durationMinutes: row.duration_minutes ?? undefined,
+    });
+  }
+  return logs;
+}
+
+export async function insertExerciseLog({
+  userId,
+  date,
+  exercise,
+}: {
+  userId: string;
+  date: string;
+  exercise: Exercise;
+}) {
+  const { error } = await supabase.from("exercise_logs").insert({
+    id: exercise.id,
+    user_id: userId,
+    date,
+    name: exercise.name,
+    calories_burned: exercise.caloriesBurned,
+    duration_minutes: exercise.durationMinutes ?? null,
+  });
+  if (error) console.error("insertExerciseLog:", error.message);
+}
+
+export async function deleteExerciseLog(id: string) {
+  const { error } = await supabase.from("exercise_logs").delete().eq("id", id);
+  if (error) console.error("deleteExerciseLog:", error.message);
 }
 
 /** Each user has at most one row. If none exists yet, we return the defaults/ */
@@ -303,14 +365,35 @@ export async function upsertCheckIn(userId: string, checkIn: CheckIn) {
  * If you ever need to add a new data type, add it here and in DataProvider.
  */
 export async function fetchAllUserData(userId: string) {
-  const [logs, macroGoals, microNutrientGoals, fitnessGoals, checkIns] =
-    await Promise.all([
-      fetchFoodLogs(userId),
-      fetchMacroGoals(userId),
-      fetchMicroGoals(userId),
-      fetchFitnessGoals(userId),
-      fetchCheckIns(userId),
-    ]);
+  const [
+    logs,
+    macroGoals,
+    microNutrientGoals,
+    fitnessGoals,
+    checkIns,
+    exerciseMap,
+  ] = await Promise.all([
+    fetchFoodLogs(userId),
+    fetchMacroGoals(userId),
+    fetchMicroGoals(userId),
+    fetchFitnessGoals(userId),
+    fetchCheckIns(userId),
+    fetchExerciseLogs(userId),
+  ]);
+
+  // Merge exercise logs into the DayLog structure
+  for (const [date, exercises] of Object.entries(exerciseMap)) {
+    if (!logs[date]) {
+      logs[date] = {
+        breakfast: [],
+        lunch: [],
+        dinner: [],
+        snacks: [],
+        exercises: [],
+      };
+    }
+    logs[date].exercises = exercises;
+  }
 
   return { logs, macroGoals, microNutrientGoals, fitnessGoals, checkIns };
 }

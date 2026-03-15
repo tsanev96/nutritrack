@@ -7,6 +7,7 @@ import type {
   MicroNutrients,
   FitnessGoals,
   CheckIn,
+  Exercise,
 } from "@/types";
 import {
   DEFAULT_MACRO_GOALS,
@@ -20,6 +21,8 @@ import {
   upsertMicroGoals,
   upsertFitnessGoals,
   upsertCheckIn,
+  insertExerciseLog,
+  deleteExerciseLog,
 } from "@/lib/db";
 
 const emptyDayLog = (): DayLog => ({
@@ -27,6 +30,7 @@ const emptyDayLog = (): DayLog => ({
   lunch: [],
   dinner: [],
   snacks: [],
+  exercises: [],
 });
 
 // Each action does two things:
@@ -77,6 +81,37 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
         };
       });
       deleteFoodLog(id);
+    },
+
+    addExercise: ({ date, exercise }) => {
+      set((state) => {
+        const dayLog = state.logs[date] ?? emptyDayLog();
+        return {
+          logs: {
+            ...state.logs,
+            [date]: { ...dayLog, exercises: [...dayLog.exercises, exercise] },
+          },
+        };
+      });
+      const { userId } = get();
+      if (userId) insertExerciseLog({ userId, date, exercise });
+    },
+
+    removeExercise: ({ date, id }) => {
+      set((state) => {
+        const dayLog = state.logs[date];
+        if (!dayLog) return state;
+        return {
+          logs: {
+            ...state.logs,
+            [date]: {
+              ...dayLog,
+              exercises: dayLog.exercises.filter((e) => e.id !== id),
+            },
+          },
+        };
+      });
+      deleteExerciseLog(id);
     },
 
     setMacroGoals: (goals: Macros) => {

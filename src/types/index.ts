@@ -11,6 +11,17 @@ export type Entry = {
   sugar?: number;
 };
 
+export const NUTRIENTS = [
+  "calories",
+  "carbs",
+  "fats",
+  "protein",
+  "sodium",
+  "sugar",
+] as const;
+
+export type Nutrient = (typeof NUTRIENTS)[number];
+
 export type Exercise = {
   id: string;
   name: string;
@@ -22,6 +33,8 @@ export type Macros = {
   protein: number;
   carbs: number;
   fats: number;
+  sodium?: number;
+  sugar?: number;
 };
 
 type Grams = { value: number; unit: "g" };

@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { MEALS } from "@/lib/constants";
 import DailySummary from "./DailySummary";
+import NutritionSummaryTable from "./NutritionSummaryTable";
 import MealCard from "./MealCard";
-import ExerciseCard from "./ExerciseCard";
 import { getTodayDate } from "@/utils/dates";
 
 export default function CalorieTracker() {
@@ -30,8 +30,9 @@ export default function CalorieTracker() {
           {MEALS.map((meal) => (
             <MealCard key={meal} meal={meal} date={date} />
           ))}
-          <ExerciseCard date={date} />
         </div>
+
+        <NutritionSummaryTable date={date} />
       </div>
     </div>
   );

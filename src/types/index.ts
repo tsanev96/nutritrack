@@ -37,6 +37,8 @@ export type Macros = {
   sugar?: number;
 };
 
+export type CoreMacros = Pick<Macros, "protein" | "carbs" | "fats">;
+
 type Grams = { value: number; unit: "g" };
 type Milligrams = { value: number; unit: "mg" };
 type Micrograms = { value: number; unit: "mcg" };
@@ -110,6 +112,7 @@ export type TrackerState = {
   fitnessGoals: FitnessGoals;
   /** List of all check-ins measurements */
   checkIns: CheckIn[];
+  waterGoals: number;
 };
 
 // The shape passed to hydrate() — everything except userId
@@ -127,4 +130,5 @@ export type TrackerActions = {
   setFitnessGoals: (goals: FitnessGoals) => void;
   addCheckIn: (checkIn: CheckIn) => void;
   addWaterIntake: (args: { date: string; amount: number }) => void;
+  setWaterGoals: (ml: number) => void;
 };

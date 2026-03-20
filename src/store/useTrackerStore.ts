@@ -13,6 +13,7 @@ import {
   DEFAULT_MACRO_GOALS,
   DEFAULT_MICRO_GOALS,
   DEFAULT_FITNESS_GOALS,
+  DEFAULT_WATER_GOAL,
 } from "@/lib/constants";
 import {
   insertFoodLog,
@@ -47,6 +48,7 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
     microNutrientGoals: DEFAULT_MICRO_GOALS,
     fitnessGoals: DEFAULT_FITNESS_GOALS,
     checkIns: [],
+    waterGoals: DEFAULT_WATER_GOAL,
 
     setUserId: (userId) => set({ userId }),
 
@@ -145,6 +147,10 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
       set({ fitnessGoals: goals });
       const { userId } = get();
       if (userId) upsertFitnessGoals(userId, goals);
+    },
+
+    setWaterGoals: (ml: number) => {
+      set({ waterGoals: ml });
     },
 
     addCheckIn: (checkIn: CheckIn) => {

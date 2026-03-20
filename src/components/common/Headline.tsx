@@ -1,17 +1,32 @@
 type Variant = "h1" | "h2" | "h3";
 
+import { type Color, COLOR_STYLES } from "./types";
+
 type Props = Readonly<{
   title: string;
   variant?: Variant;
+  color?: Color;
+  className?: string;
 }>;
 
 const STYLES: Record<Variant, string> = {
-  h1: "text-2xl font-semibold text-gray-900",
-  h2: "text-sm font-semibold tracking-wide text-gray-700",
-  h3: "text-xs font-semibold tracking-wide text-gray-700",
+  h1: "text-2xl font-semibold mb-3",
+  h2: "text-xl font-semibold tracking-wide mb-3",
+  h3: "text-xs font-semibold tracking-wide mb-3",
 };
 
-export default function Headline({ title, variant = "h2" }: Props) {
+export default function Headline({
+  title,
+  variant = "h2",
+  color = "black",
+  className,
+}: Props) {
   const Tag = variant;
-  return <Tag className={STYLES[variant]}>{title}</Tag>;
+  return (
+    <Tag
+      className={`${STYLES[variant]} ${COLOR_STYLES[color]} ${className ?? ""}`}
+    >
+      {title}
+    </Tag>
+  );
 }

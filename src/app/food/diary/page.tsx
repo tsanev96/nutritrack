@@ -1,11 +1,11 @@
 import CalorieTracker from "@/components/CalorieTracker";
-import Headline from "@/components/common/Headline";
+import WaterConsumption from "@/components/WaterConsumption";
 
 export default function FoodDiaryPage() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-8">
-      <Headline title="Food Diary" />
+    <main className="mx-auto  p-6 py-8 bg-slate-500">
       <CalorieTracker />
+      <WaterConsumption />
     </main>
   );
 }

@@ -3,6 +3,7 @@ import NutritionGoalsSection from "./_components/NutritionGoalsSection";
 import MicronutrientsSection from "./_components/MicronutrientsSection";
 import FitnessSection from "./_components/FitnessSection";
 import MealsCalories from "./_components/MealsCalories";
+import WaterGoalSection from "./_components/WaterGoalSection";
 
 export default function Goals() {
   return (
@@ -14,6 +15,7 @@ export default function Goals() {
             <NutritionGoalsSection />
             <MealsCalories />
             <FitnessSection />
+            <WaterGoalSection />
           </div>
           <MicronutrientsSection />
         </div>

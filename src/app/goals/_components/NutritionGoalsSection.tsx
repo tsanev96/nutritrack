@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTrackerStore } from "@/store/useTrackerStore";
 import InputField from "@/components/common/InputField";
 import SaveActions from "./SaveActions";
-import type { Macros } from "@/types";
+import type { CoreMacros } from "@/types";
 import { calcCalories } from "@/utils/calculateCalories";
 import CardSection from "@/components/common/CardSection";
 import Rows from "./Rows";
@@ -15,7 +15,12 @@ export default function NutritionGoalsSection() {
   const setMacroGoals = useTrackerStore((s) => s.setMacroGoals);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [macrosForm, setMacrosForm] = useState<Macros>(macroGoals);
+
+  const [macrosForm, setMacrosForm] = useState<CoreMacros>({
+    protein: macroGoals.protein,
+    carbs: macroGoals.carbs,
+    fats: macroGoals.fats,
+  });
 
   function handleEdit() {
     setMacrosForm(macroGoals);
@@ -42,22 +47,27 @@ export default function NutritionGoalsSection() {
     { label: "Fat", value: `${macroGoals.fats} g` },
   ];
 
-  const inputFields = [
+  const inputFields: {
+    label: string;
+    key: keyof CoreMacros;
+    placeholder: string;
+    onChange: (v: number) => void;
+  }[] = [
     {
       label: "Protein (g)",
-      key: "protein" as keyof Macros,
+      key: "protein" as keyof CoreMacros,
       placeholder: "150",
       onChange: (protein: number) => setMacrosForm((p) => ({ ...p, protein })),
     },
     {
       label: "Carbs (g)",
-      key: "carbs" as keyof Macros,
+      key: "carbs" as keyof CoreMacros,
       placeholder: "200",
       onChange: (carbs: number) => setMacrosForm((p) => ({ ...p, carbs })),
     },
     {
       label: "Fat (g)",
-      key: "fats" as keyof Macros,
+      key: "fats" as keyof CoreMacros,
       placeholder: "65",
       onChange: (fats: number) => setMacrosForm((p) => ({ ...p, fats })),
     },

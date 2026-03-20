@@ -70,6 +70,8 @@ export const DEFAULT_FITNESS_GOALS: FitnessGoals = {
   weeklyGoal: "maintain",
 };
 
+export const DEFAULT_WATER_GOAL = 2000;
+
 export const STORAGE_KEY = "calorie-tracker-v1";
 
 export const MEASUREMENT_KEYS = Object.keys({

@@ -23,6 +23,7 @@ import {
   upsertCheckIn,
   insertExerciseLog,
   deleteExerciseLog,
+  upsertWaterIntake,
 } from "@/lib/db";
 
 const emptyDayLog = (): DayLog => ({
@@ -112,6 +113,20 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
         };
       });
       deleteExerciseLog(id);
+    },
+
+    addWaterIntake: ({ date, amount }) => {
+      set((state) => {
+        const dayLog = state.logs[date] ?? emptyDayLog();
+        return {
+          logs: {
+            ...state.logs,
+            [date]: { ...dayLog, water: (dayLog.water ?? 0) + amount },
+          },
+        };
+      });
+      const { userId } = get();
+      if (userId) upsertWaterIntake(userId, date, amount);
     },
 
     setMacroGoals: (goals: Macros) => {

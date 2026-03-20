@@ -176,6 +176,23 @@ export async function upsertMacroGoals(userId: string, goals: Macros) {
   if (error) console.error("upsertMacroGoals:", error.message);
 }
 
+export async function upsertWaterIntake(
+  userId: string,
+  date: string,
+  waterMl: number,
+) {
+  const { error } = await supabase.from("water_intake").upsert(
+    {
+      user_id: userId,
+      date,
+      amount_ml: waterMl,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id,date" },
+  );
+  if (error) console.error("upsertWaterIntake:", error.message);
+}
+
 /** The DB stores just the numbers (e.g. 20), the TypeScript type stores { value: 20, unit: "g" }.
  * So when we read from DB, we reconstruct the full typed object using defaults for units.
  */

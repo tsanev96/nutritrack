@@ -97,6 +97,8 @@ export type DayLog = {
   dinner: Entry[];
   snacks: Entry[];
   exercises: Exercise[];
+  /** in ml */
+  water?: number;
 };
 
 export type TrackerState = {
@@ -124,4 +126,5 @@ export type TrackerActions = {
   setMicroNutrientGoals: (goals: MicroNutrients) => void;
   setFitnessGoals: (goals: FitnessGoals) => void;
   addCheckIn: (checkIn: CheckIn) => void;
+  addWaterIntake: (args: { date: string; amount: number }) => void;
 };

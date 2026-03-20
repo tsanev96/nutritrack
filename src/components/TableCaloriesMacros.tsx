@@ -20,23 +20,20 @@ export default function TableCaloriesMacros({ entries, onRemoveEntry }: Props) {
     "Delete", // todo icon
   ];
 
-  const rows = entries
-    ? entries.map((entry) => [
-        entry.name,
-        entry.calories.toString(),
-        (entry.carbs ?? 0).toString(),
-        (entry.fats ?? 0).toString(),
-        (entry.protein ?? 0).toString(),
-        (entry.sodium ?? 0).toString(),
-        (entry.sugar ?? 0).toString(),
-        <TrashIcon
-          key="delete"
-          className="h-5 w-5 cursor-pointer text-gray-400 hover:text-red-600"
-          onClick={() => onRemoveEntry?.(entry.id)}
-        />,
-      ])
-    : undefined;
-
+  const rows = entries?.map((entry) => [
+    entry.name,
+    entry.calories.toString(),
+    (entry.carbs ?? 0).toString(),
+    (entry.fats ?? 0).toString(),
+    (entry.protein ?? 0).toString(),
+    (entry.sodium ?? 0).toString(),
+    (entry.sugar ?? 0).toString(),
+    <TrashIcon
+      key="delete"
+      className="h-5 w-5 cursor-pointer text-gray-400 hover:text-red-600"
+      onClick={() => onRemoveEntry?.(entry.id)}
+    />,
+  ]);
   return (
     <Table
       headers={headers}

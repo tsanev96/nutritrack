@@ -3,21 +3,13 @@
 // All functions use the user's ID to ensure they only touch their own data.
 
 import { supabase } from "./supabase";
-import type {
-  Macros,
-  FitnessGoals,
-  CheckIn,
-  Entry,
-  Exercise,
-  Meal,
-  DayLog,
-} from "@/types";
-import {
-  DEFAULT_MACRO_GOALS,
-  DEFAULT_FITNESS_GOALS,
-} from "./constants";
+import type { Entry, Exercise, Meal, DayLog } from "@/types";
 import { fetchCheckIns } from "@/features/checkIn/api";
-import { fetchMicroGoals } from "@/features/goals/api";
+import {
+  fetchFitnessGoals,
+  fetchMacroGoals,
+  fetchMicroGoals,
+} from "@/features/goals/api";
 
 /**  Food logs are stored as flat rows (one row per food entry).
  * We fetch them all and re-group them into { "2024-01-01": { breakfast: [], ... } }
@@ -149,33 +141,6 @@ export async function deleteExerciseLog(id: string) {
   if (error) console.error("deleteExerciseLog:", error.message);
 }
 
-/** Each user has at most one row. If none exists yet, we return the defaults/ */
-export async function fetchMacroGoals(userId: string): Promise<Macros> {
-  const { data } = await supabase
-    .from("macro_goals")
-    .select("protein, carbs, fats")
-    .eq("user_id", userId)
-    .single();
-
-  return data ?? DEFAULT_MACRO_GOALS;
-}
-
-/** "upsert" = insert if the row doesn't exist, update if it does.
- * The conflict is on user_id — each user has exactly one row. */
-export async function upsertMacroGoals(userId: string, goals: Macros) {
-  const { error } = await supabase.from("macro_goals").upsert(
-    {
-      user_id: userId,
-      protein: goals.protein,
-      carbs: goals.carbs,
-      fats: goals.fats,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id" },
-  );
-  if (error) console.error("upsertMacroGoals:", error.message);
-}
-
 export async function upsertWaterIntake(
   userId: string,
   date: string,
@@ -191,43 +156,6 @@ export async function upsertWaterIntake(
     { onConflict: "user_id,date" },
   );
   if (error) console.error("upsertWaterIntake:", error.message);
-}
-
-/**
- * Fetches the user's fitness goals (target weight, activity level, weekly goal).
- * Returns defaults if the user hasn't saved any yet.
- */
-export async function fetchFitnessGoals(userId: string): Promise<FitnessGoals> {
-  const { data } = await supabase
-    .from("fitness_goals")
-    .select("target_weight, weight_unit, activity_level, weekly_goal")
-    .eq("user_id", userId)
-    .single();
-
-  if (!data) return DEFAULT_FITNESS_GOALS;
-
-  const { activity_level, target_weight, weekly_goal, weight_unit } = data;
-  return {
-    targetWeight: target_weight,
-    weightUnit: weight_unit as "kg" | "lbs",
-    activityLevel: activity_level as FitnessGoals["activityLevel"],
-    weeklyGoal: weekly_goal as FitnessGoals["weeklyGoal"],
-  };
-}
-
-export async function upsertFitnessGoals(userId: string, goals: FitnessGoals) {
-  const { error } = await supabase.from("fitness_goals").upsert(
-    {
-      user_id: userId,
-      target_weight: goals.targetWeight,
-      weight_unit: goals.weightUnit,
-      activity_level: goals.activityLevel,
-      weekly_goal: goals.weeklyGoal,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id" },
-  );
-  if (error) console.error("upsertFitnessGoals:", error.message);
 }
 
 /** Fetches all user data in parallel. Used by DataProvider on login.
@@ -256,6 +184,7 @@ export async function fetchAllUserData(userId: string) {
       logs[date] = {
         breakfast: [],
         lunch: [],
+
         dinner: [],
         snacks: [],
         exercises: [],

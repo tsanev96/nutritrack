@@ -18,13 +18,13 @@ import {
   insertFoodLog,
   deleteFoodLog,
   upsertMacroGoals,
-  upsertMicroGoals,
   upsertFitnessGoals,
   insertExerciseLog,
   deleteExerciseLog,
   upsertWaterIntake,
 } from "@/lib/db";
 import { upsertCheckIn } from "@/features/checkIn/api";
+import { upsertMicroGoals } from "@/features/goals/api";
 
 const emptyDayLog = (): DayLog => ({
   breakfast: [],

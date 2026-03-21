@@ -7,7 +7,6 @@ import type {
   MicroNutrients,
   FitnessGoals,
   CheckIn,
-  Exercise,
 } from "@/types";
 import {
   DEFAULT_MACRO_GOALS,
@@ -21,11 +20,11 @@ import {
   upsertMacroGoals,
   upsertMicroGoals,
   upsertFitnessGoals,
-  upsertCheckIn,
   insertExerciseLog,
   deleteExerciseLog,
   upsertWaterIntake,
 } from "@/lib/db";
+import { upsertCheckIn } from "@/features/checkIn/api";
 
 const emptyDayLog = (): DayLog => ({
   breakfast: [],

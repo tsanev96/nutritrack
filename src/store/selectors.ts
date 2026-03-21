@@ -1,3 +1,4 @@
+import { MEALS } from "@/lib/constants";
 import type { TrackerState, TrackerActions } from "@/types";
 import { calcCalories } from "@/utils/calculateCalories";
 
@@ -8,9 +9,10 @@ export const selectDailyCalories = (s: Store) => calcCalories(s.macroGoals);
 
 /** How many calories the user has consumed on a given date */
 export const selectConsumedCalories = (date: string) => (s: Store) =>
-  Object.values(s.logs[date] ?? {})
-    .flat()
-    .reduce((sum, entry) => sum + entry.calories, 0);
+  MEALS.flatMap((meal) => s.logs[date]?.[meal] ?? []).reduce(
+    (sum, entry) => sum + entry.calories,
+    0,
+  );
 
 /** How many calories are left for a given date (can be negative if over goal) */
 export const selectRemainingCalories = (date: string) => (s: Store) =>

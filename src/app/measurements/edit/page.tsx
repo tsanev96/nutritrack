@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTrackerStore } from "@/store/useTrackerStore";
-import type { BodyMeasurements, CheckIn } from "@/types";
+import type { CheckIn } from "@/types";
 import Headline from "@/components/common/Headline";
 import CardSection from "@/components/common/CardSection";
 import Button from "@/components/common/Button";

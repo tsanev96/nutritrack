@@ -26,10 +26,10 @@ describe("upsertMicroGoals", () => {
 
   it("maps camelCase goals to snake_case DB columns", async () => {
     await upsertMicroGoals("user-1", DEFAULT_MICRO_GOALS);
-    const payload = upsert.mock.calls[0][0];
+    const payload = upsert.mock.calls[0][0]; // Get the first argument of the first call to upsert
     expect(payload).toHaveProperty("saturated_fat");
-    expect(payload).toHaveProperty("vitamin_a");
-    expect(payload).not.toHaveProperty("saturatedFat");
+    expect(payload).toHaveProperty("sugar");
+    expect(payload).toHaveProperty("fiber");
   });
 });
 

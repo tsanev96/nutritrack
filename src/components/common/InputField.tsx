@@ -1,15 +1,18 @@
 "use client";
 
 type Props<T extends string | number> = Readonly<{
-  label: string;
+  label?: string;
   value: T;
   onChange: (value: T) => void;
   error?: string;
   placeholder?: string;
-  type: "text" | "number" | "email" | "password";
+  type: "text" | "number" | "email" | "password" | "date";
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  min?: string | number;
+  max?: string | number;
+  step?: number;
 }>;
 
 export default function InputField<T extends string | number>({
@@ -22,15 +25,20 @@ export default function InputField<T extends string | number>({
   required = true,
   disabled,
   className = "",
+  max,
+  min,
+  step,
 }: Props<T>) {
   return (
     <div>
-      <label
-        htmlFor={label}
-        className={`${className} mb-1 block text-sm font-medium text-gray-700`}
-      >
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
+      {label && (
+        <label
+          htmlFor={label}
+          className={`${className} mb-1 block text-sm font-medium text-gray-700`}
+        >
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
       <input
         id={label}
         disabled={disabled}
@@ -38,7 +46,9 @@ export default function InputField<T extends string | number>({
         value={value}
         onChange={(e) => onChange(e.target.value as unknown as T)}
         placeholder={placeholder}
-        min={0}
+        min={min}
+        max={max}
+        step={step}
         className="text-gray-700 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}

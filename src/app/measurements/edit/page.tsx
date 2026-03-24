@@ -9,6 +9,8 @@ import CardSection from "@/components/common/CardSection";
 import Button from "@/components/common/Button";
 import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/lib/constants";
+import InputField from "@/components/common/InputField";
+import Paragraph from "@/components/common/Paragraph";
 
 type EditRowProps = Readonly<{
   checkIn: CheckIn;
@@ -31,32 +33,28 @@ function EditRow({ checkIn, weightUnit, onSave }: EditRowProps) {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-3">
-        <label className="w-24 shrink-0 text-sm text-gray-500">Weight</label>
-        <input
+        <InputField
+          label="Weight"
           type="number"
           min={0}
           step={0.1}
           value={weight}
-          onChange={(e) => setWeight(Number(e.target.value) || 0)}
-          className="w-28 rounded-md border px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+          onChange={(value) => setWeight(Number(value) || 0)}
         />
         <span className="text-sm text-gray-400">{weightUnit}</span>
       </div>
       {MEASUREMENT_KEYS.map((key) => (
         <div key={key} className="flex items-center gap-3">
-          <label className="w-24 shrink-0 text-sm text-gray-500">
-            {key[0].toUpperCase() + key.slice(1)}
-          </label>
-          <input
+          <InputField
+            label={key[0].toUpperCase() + key.slice(1)}
             type="number"
             min={0}
             step={0.1}
             value={measurements[key]}
-            onChange={(e) =>
-              setMeasurements((p) => ({ ...p, [key]: e.target.value }))
+            onChange={(value) =>
+              setMeasurements((p) => ({ ...p, [key]: value }))
             }
             placeholder="—"
-            className="w-28 rounded-md border px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <span className="text-sm text-gray-400">cm</span>
         </div>
@@ -90,9 +88,7 @@ export default function EditMeasurementsPage() {
           </Link>
         </div>
 
-        {sorted.length === 0 && (
-          <p className="text-sm text-gray-400">No check-ins yet.</p>
-        )}
+        {sorted.length === 0 && <Paragraph>No check-ins yet.</Paragraph>}
 
         {sorted.map((entry) => (
           <CardSection key={entry.date}>

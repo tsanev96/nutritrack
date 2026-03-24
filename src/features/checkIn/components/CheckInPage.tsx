@@ -9,6 +9,9 @@ import Button from "@/components/common/Button";
 import { getTodayDate } from "@/utils/dates";
 import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/lib/constants";
+import Table from "@/components/common/Table";
+import InputField from "@/components/common/InputField";
+import Paragraph from "@/components/common/Paragraph";
 
 const headers = ["Measurement", "Last entry", "Today"];
 
@@ -49,12 +52,11 @@ export default function CheckInPage() {
         <div className="flex items-center justify-between">
           <Headline title="Check-in" variant="h1" />
           <div className="flex items-center gap-3">
-            <input
+            <InputField
               type="date"
               value={date}
+              onChange={(value) => handleDateChange(value)}
               max={getTodayDate()}
-              onChange={(e) => handleDateChange(e.target.value)}
-              className="rounded-md border px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
             />
             <Link
               href="/measurements/edit"
@@ -69,25 +71,23 @@ export default function CheckInPage() {
         <CardSection>
           <Headline title="Today's Weight" variant="h2" />
           <div className="mt-3 flex items-center gap-3">
-            <input
-              type="number"
-              min={0}
-              step={0.1}
+            <InputField
               value={weight}
-              onChange={(e) => setWeight(Number(e.target.value) || 0)}
+              onChange={(value) => setWeight(Number(value) || 0)}
+              type="number"
               placeholder="0.0"
-              className="w-full rounded-md border px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <span className="shrink-0 text-sm font-medium text-gray-500">
               {weightUnit}
             </span>
           </div>
           {lastEntry?.weight && (
-            <p className="mt-2 text-xs text-gray-400">
+            <Paragraph>
               Last entry: {lastEntry.weight} {weightUnit} ({lastEntry.date})
-            </p>
+            </Paragraph>
           )}
         </CardSection>
+
         {/* Measurements */}
         <CardSection>
           <Headline title="Measurements (cm)" variant="h2" />
@@ -111,19 +111,18 @@ export default function CheckInPage() {
                     {lastEntry?.measurements[key] ?? "—"}
                   </td>
                   <td className="py-2">
-                    <input
+                    <InputField
                       type="number"
-                      min={0}
-                      step={0.1}
                       value={measurements[key]}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setMeasurements((p) => ({
                           ...p,
-                          [key]: e.target.value,
+                          [key]: value,
                         }))
                       }
                       placeholder="0.0"
-                      className="w-24 rounded-md border px-2 py-1 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      min={0}
+                      className="w-24"
                     />
                   </td>
                 </tr>
@@ -137,9 +136,7 @@ export default function CheckInPage() {
         </Button>
 
         {saved && (
-          <p className="text-center text-sm font-medium text-green-600">
-            Check-in saved!
-          </p>
+          <Paragraph className="text-green-600">Check-in saved!</Paragraph>
         )}
       </div>
     </div>

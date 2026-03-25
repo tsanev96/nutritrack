@@ -1,6 +1,6 @@
-type Variant = "h1" | "h2" | "h3";
+import { Color, COLOR_STYLES } from "../common/types";
 
-import { type Color, COLOR_STYLES } from "./types";
+type Variant = "h1" | "h2" | "h3";
 
 type Props = Readonly<{
   title: string;
@@ -15,6 +15,7 @@ const STYLES: Record<Variant, string> = {
   h3: "text-xs font-semibold tracking-wide mb-3",
 };
 
+// todo title as children
 export default function Headline({
   title,
   variant = "h2",

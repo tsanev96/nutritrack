@@ -5,7 +5,7 @@ import { useTrackerStore } from "@/stores/useTrackerStore";
 import { MEALS } from "@/config/constants";
 import { getTodayDate } from "@/utils/dates";
 import Rows from "./Rows";
-import CardSection from "@/components/CardSection";
+import CardSection from "@/components/common/CardSection";
 import HeadlineWrapper from "./HeadlineWrapper";
 
 export default function MealsCalories() {

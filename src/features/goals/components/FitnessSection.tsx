@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useTrackerStore } from "@/stores/useTrackerStore";
 import type { ActivityLevel, WeeklyGoal } from "@/types";
-import CardSection from "@/components/CardSection";
-import SelectField from "@/components/SelectField";
+import CardSection from "@/components/common/CardSection";
+import SelectField from "@/components/common/SelectField";
 import SaveActions from "./SaveActions";
 import { ACTIVITY_LABELS, WEEKLY_GOAL_LABELS } from "@/config/constants";
 import Rows from "./Rows";

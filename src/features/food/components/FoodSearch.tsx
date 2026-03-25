@@ -2,9 +2,9 @@
 
 import { FoodSuggestion, searchFood } from "@/lib/foodApi";
 import { useState } from "react";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "@/components/ui/ErrorMessage";
 import { calcCalories } from "@/utils/calculateCalories";
-import Button from "@/components/Button";
+import Button from "@/components/ui/Button";
 
 type Props = Readonly<{
   foodName: string;

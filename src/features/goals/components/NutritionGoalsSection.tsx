@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { useTrackerStore } from "@/stores/useTrackerStore";
-import InputField from "@/components/InputField";
+import InputField from "@/components/common/InputField";
 import SaveActions from "./SaveActions";
 import type { CoreMacros } from "@/types";
 import { calcCalories } from "@/utils/calculateCalories";
-import CardSection from "@/components/CardSection";
+import CardSection from "@/components/common/CardSection";
 import Rows from "./Rows";
 import HeadlineWrapper from "./HeadlineWrapper";
 

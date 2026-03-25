@@ -3,14 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTrackerStore } from "@/stores/useTrackerStore";
-import Headline from "@/components/Headline";
-import CardSection from "@/components/CardSection";
-import Button from "@/components/Button";
+import Headline from "@/components/ui/Headline";
+import CardSection from "@/components/common/CardSection";
+import Button from "@/components/ui/Button";
 import { getTodayDate } from "@/utils/dates";
 import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/config/constants";
-import InputField from "@/components/InputField";
-import Paragraph from "@/components/Paragraph";
+import InputField from "@/components/common/InputField";
+import Paragraph from "@/components/ui/Paragraph";
 
 const headers = ["Measurement", "Last entry", "Today"];
 

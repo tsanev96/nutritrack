@@ -1,6 +1,6 @@
 "use client";
 
-import Headline from "@/components/Headline";
+import Headline from "@/components/ui/Headline";
 
 type Props = Readonly<{
   title: string;

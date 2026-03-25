@@ -1,4 +1,4 @@
-import { type Color, COLOR_STYLES } from "./types";
+import { Color, COLOR_STYLES } from "../common/types";
 
 type Variant = "base" | "sm";
 

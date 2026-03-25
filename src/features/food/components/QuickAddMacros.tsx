@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import InputField from "@/components/InputField";
+import InputField from "@/components/common/InputField";
 import { Macros } from "@/types";
 
 // type Props = Readonly<{

@@ -6,7 +6,7 @@ import DailySummary from "./DailySummary";
 import NutritionSummaryTable from "./NutritionSummaryTable";
 import MealCard from "./MealCard";
 import { getTodayDate } from "@/utils/dates";
-import Headline from "@/components/Headline";
+import Headline from "@/components/ui/Headline";
 
 export default function CalorieTracker() {
   const [date, setDate] = useState(getTodayDate());

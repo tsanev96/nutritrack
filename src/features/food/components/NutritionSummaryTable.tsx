@@ -8,7 +8,7 @@ import {
 import { NUTRIENTS, type Nutrient } from "@/types";
 import { MEALS } from "@/config/constants";
 import { useShallow } from "zustand/shallow";
-import Table from "@/components/Table";
+import Table from "@/components/ui/Table";
 
 type Props = Readonly<{ date: string }>;
 

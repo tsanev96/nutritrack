@@ -2,7 +2,7 @@
 
 import { Entry } from "@/types";
 import { TrashIcon } from "@heroicons/react/24/outline";
-import Table from "@/components/Table";
+import Table from "@/components/ui/Table";
 
 type Props = Readonly<{
   entries?: Entry[];

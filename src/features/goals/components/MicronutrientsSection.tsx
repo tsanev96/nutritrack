@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import type { MicroNutrients } from "@/types";
-import { MICRO_NUTRIENTS_NAMES } from "@/lib/constants";
-import CardSection from "@/components/common/CardSection";
+import { MICRO_NUTRIENTS_NAMES } from "@/config/constants";
+import CardSection from "@/components/CardSection";
 import SaveActions from "./SaveActions";
 import HeadlineWrapper from "./HeadlineWrapper";
 

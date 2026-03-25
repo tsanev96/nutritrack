@@ -1,11 +1,11 @@
 "use client";
 
 import { useShallow } from "zustand/shallow";
-import { useTrackerStore } from "@/store/useTrackerStore";
-import { MEALS } from "@/lib/constants";
+import { useTrackerStore } from "@/stores/useTrackerStore";
+import { MEALS } from "@/config/constants";
 import { getTodayDate } from "@/utils/dates";
 import Rows from "./Rows";
-import CardSection from "@/components/common/CardSection";
+import CardSection from "@/components/CardSection";
 import HeadlineWrapper from "./HeadlineWrapper";
 
 export default function MealsCalories() {

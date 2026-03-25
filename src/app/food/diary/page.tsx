@@ -1,5 +1,5 @@
-import CalorieTracker from "@/components/CalorieTracker";
-import WaterConsumption from "@/components/WaterConsumption";
+import CalorieTracker from "@/features/food/components/CalorieTracker";
+import WaterConsumption from "@/features/food/components/WaterConsumption";
 
 export default function FoodDiaryPage() {
   return (

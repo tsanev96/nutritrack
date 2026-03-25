@@ -13,7 +13,7 @@ import {
   DEFAULT_MICRO_GOALS,
   DEFAULT_FITNESS_GOALS,
   DEFAULT_WATER_GOAL,
-} from "@/lib/constants";
+} from "@/config/constants";
 import {
   insertFoodLog,
   deleteFoodLog,
@@ -21,12 +21,12 @@ import {
   deleteExerciseLog,
   upsertWaterIntake,
 } from "@/lib/db";
-import { upsertCheckIn } from "@/features/checkIn/api";
+import { upsertCheckIn } from "@/features/checkIn/services/api";
 import {
   upsertFitnessGoals,
   upsertMacroGoals,
   upsertMicroGoals,
-} from "@/features/goals/api";
+} from "@/features/goals/services/api";
 
 const emptyDayLog = (): DayLog => ({
   breakfast: [],

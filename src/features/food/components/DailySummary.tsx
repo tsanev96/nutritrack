@@ -1,7 +1,7 @@
 "use client";
 
-import { selectDailyCalories, selectConsumedCalories } from "@/store/selectors";
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { selectDailyCalories, selectConsumedCalories } from "@/stores/selectors";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import { formatDateLabel } from "@/utils/dates";
 
 type Props = Readonly<{

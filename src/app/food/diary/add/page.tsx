@@ -4,7 +4,7 @@
 
 export const dynamic = "force-dynamic";
 
-import AddEntry from "@/components/AddEntry";
+import AddEntry from "@/features/food/components/AddEntry";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Meal } from "@/types";
 

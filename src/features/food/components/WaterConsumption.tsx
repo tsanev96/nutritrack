@@ -1,6 +1,6 @@
 "use client";
 
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import Headline from "./common/Headline";
 import { getTodayDate } from "@/utils/dates";
 import Paragraph from "./common/Paragraph";

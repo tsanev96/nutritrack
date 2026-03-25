@@ -1,14 +1,14 @@
 "use client";
 
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import {
   calcTotalNutrients,
   macroGoalsToNutrients,
 } from "@/utils/calculateCalories";
 import { NUTRIENTS, type Nutrient } from "@/types";
-import { MEALS } from "@/lib/constants";
+import { MEALS } from "@/config/constants";
 import { useShallow } from "zustand/shallow";
-import Table from "./common/Table";
+import Table from "@/components/Table";
 
 type Props = Readonly<{ date: string }>;
 

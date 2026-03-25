@@ -7,8 +7,8 @@
 // and every store action writes back to Supabase automatically.
 
 import { useEffect, useState } from "react";
-import { useAuthUser } from "@/components/AuthProvider";
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { useAuthUser } from "./AuthProvider";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import { fetchAllUserData } from "@/lib/db";
 
 type Props = Readonly<{

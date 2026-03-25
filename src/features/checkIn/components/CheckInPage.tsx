@@ -2,16 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useTrackerStore } from "@/store/useTrackerStore";
-import Headline from "@/components/common/Headline";
-import CardSection from "@/components/common/CardSection";
-import Button from "@/components/common/Button";
+import { useTrackerStore } from "@/stores/useTrackerStore";
+import Headline from "@/components/Headline";
+import CardSection from "@/components/CardSection";
+import Button from "@/components/Button";
 import { getTodayDate } from "@/utils/dates";
 import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
-import { MEASUREMENT_KEYS } from "@/lib/constants";
-import Table from "@/components/common/Table";
-import InputField from "@/components/common/InputField";
-import Paragraph from "@/components/common/Paragraph";
+import { MEASUREMENT_KEYS } from "@/config/constants";
+import InputField from "@/components/InputField";
+import Paragraph from "@/components/Paragraph";
 
 const headers = ["Measurement", "Last entry", "Today"];
 

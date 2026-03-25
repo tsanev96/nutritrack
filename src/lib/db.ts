@@ -4,12 +4,12 @@
 
 import { supabase } from "./supabase";
 import type { Entry, Exercise, Meal, DayLog } from "@/types";
-import { fetchCheckIns } from "@/features/checkIn/api";
+import { fetchCheckIns } from "@/features/checkIn/services/api";
 import {
   fetchFitnessGoals,
   fetchMacroGoals,
   fetchMicroGoals,
-} from "@/features/goals/api";
+} from "@/features/goals/services/api";
 
 /**  Food logs are stored as flat rows (one row per food entry).
  * We fetch them all and re-group them into { "2024-01-01": { breakfast: [], ... } }

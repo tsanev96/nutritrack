@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import Button from "@/components/common/Button";
-import InputField from "@/components/common/InputField";
-import ErrorMessage from "@/components/common/ErrorMessage";
+import Button from "@/components/Button";
+import InputField from "@/components/InputField";
+import ErrorMessage from "@/components/ErrorMessage";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");

@@ -1,5 +1,5 @@
 import { mockSupabaseClient } from "@/__tests__/db";
-import { fetchCheckIns, upsertCheckIn } from "@/features/checkIn/api";
+import { fetchCheckIns, upsertCheckIn } from "@/features/checkIn/services/api";
 import { getTodayDate } from "@/utils/dates";
 
 const { eq, from, select, single, upsert } = mockSupabaseClient;

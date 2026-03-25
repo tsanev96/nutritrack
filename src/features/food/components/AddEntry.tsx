@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Meal } from "@/types";
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import FoodSearch from "./FoodSearch";
 import { calcCalories } from "@/utils/calculateCalories";
 import { FoodSuggestion } from "@/lib/foodApi";

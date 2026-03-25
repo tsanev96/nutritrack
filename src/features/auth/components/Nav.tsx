@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { useAuthUser } from "@/components/AuthProvider";
+import { useAuthUser } from "@/providers/AuthProvider";
 
 const SECTIONS = [
   {

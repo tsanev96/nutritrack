@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import { useShallow } from "zustand/shallow";
-import Button from "./common/Button";
-import InputField from "./common/InputField";
-import ErrorMessage from "./common/ErrorMessage";
+import Button from "@/components/Button";
+import InputField from "@/components/InputField";
+import ErrorMessage from "@/components/ErrorMessage";
 
 type Props = Readonly<{ date: string }>;
 

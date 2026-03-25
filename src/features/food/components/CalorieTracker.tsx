@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { MEALS } from "@/lib/constants";
+import { MEALS } from "@/config/constants";
 import DailySummary from "./DailySummary";
 import NutritionSummaryTable from "./NutritionSummaryTable";
 import MealCard from "./MealCard";
 import { getTodayDate } from "@/utils/dates";
-import Headline from "./common/Headline";
+import Headline from "@/components/Headline";
 
 export default function CalorieTracker() {
   const [date, setDate] = useState(getTodayDate());

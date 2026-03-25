@@ -1,5 +1,5 @@
 import CalorieTracker from "@/components/CalorieTracker";
-import Headline from "@/components/common/Headline";
+import Headline from "@/components/Headline";
 
 export default function Home() {
   return (

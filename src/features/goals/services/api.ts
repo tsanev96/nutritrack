@@ -4,7 +4,7 @@ import {
   DEFAULT_FITNESS_GOALS,
   DEFAULT_MACRO_GOALS,
   DEFAULT_MICRO_GOALS,
-} from "@/lib/constants";
+} from "@/config/constants";
 
 /** "upsert" = insert if the row doesn't exist, update if it does.
  * The conflict is on user_id — each user has exactly one row. */

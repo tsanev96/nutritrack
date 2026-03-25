@@ -1,7 +1,7 @@
 "use client";
 
 import type { Meal } from "@/types";
-import { useTrackerStore } from "@/store/useTrackerStore";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 import Link from "next/link";
 import { useShallow } from "zustand/shallow";
 import TableCaloriesMacros from "./TableCaloriesMacros";

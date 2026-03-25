@@ -1,6 +1,6 @@
 import { mockSupabaseClient } from "@/__tests__/db";
-import { upsertMicroGoals, fetchMicroGoals } from "@/features/goals/api";
-import { DEFAULT_MICRO_GOALS } from "@/lib/constants";
+import { upsertMicroGoals, fetchMicroGoals } from "@/features/goals/services/api";
+import { DEFAULT_MICRO_GOALS } from "@/config/constants";
 
 jest.mock("@/lib/supabase");
 

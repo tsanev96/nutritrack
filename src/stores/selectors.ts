@@ -1,4 +1,4 @@
-import { MEALS } from "@/lib/constants";
+import { MEALS } from "@/config/constants";
 import type { TrackerState, TrackerActions } from "@/types";
 import { calcCalories } from "@/utils/calculateCalories";
 

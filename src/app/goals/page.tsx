@@ -1,3 +1,3 @@
-import GoalsPage from "@/features/goals/components/GoalsPage";
+import GoalsPage from "@/features/goals/components/index";
 
 export default GoalsPage;

@@ -5,8 +5,10 @@ import { useTrackerStore } from "@/stores/useTrackerStore";
 import type { MicroNutrients } from "@/types";
 import { MICRO_NUTRIENTS_NAMES } from "@/config/constants";
 import CardSection from "@/components/common/CardSection";
-import SaveActions from "./SaveActions";
+import SaveActions from "../../../components/common/SaveActions";
 import HeadlineWrapper from "./HeadlineWrapper";
+import InputField from "@/components/common/InputField";
+import Paragraph from "@/components/ui/Paragraph";
 
 type MicroKey = keyof MicroNutrients;
 
@@ -71,22 +73,19 @@ export default function MicronutrientsSection() {
 
       {GROUPS.map(({ label, keys }) => (
         <div key={label} className="mb-4 last:mb-0">
-          <p className="mb-1 text-xs font-semibold text-gray-700">{label}</p>
+          <Paragraph>{label}</Paragraph>
           {isEditing ? (
             <div className="grid grid-cols-2 gap-2">
               {keys.map((key) => (
                 <div key={key}>
-                  <label className="mb-0.5 block text-xs text-gray-600">
-                    {MICRO_NUTRIENTS_NAMES[key]} ({goals[key].unit})
-                  </label>
-                  <input
+                  <InputField
+                    label={`{MICRO_NUTRIENTS_NAMES[key]} ({goals[key].unit})`}
+                    onChange={(value) =>
+                      setForm((p) => ({ ...p, [key]: value }))
+                    }
                     type="number"
                     min={0}
                     value={form[key]}
-                    onChange={(e) =>
-                      setForm((p) => ({ ...p, [key]: e.target.value }))
-                    }
-                    className="w-full rounded-md border px-2 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               ))}

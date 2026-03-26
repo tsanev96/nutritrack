@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTrackerStore } from "@/stores/useTrackerStore";
 import InputField from "@/components/common/InputField";
-import SaveActions from "./SaveActions";
+import SaveActions from "../../../components/common/SaveActions";
 import type { CoreMacros } from "@/types";
 import { calcCalories } from "@/utils/calculateCalories";
 import CardSection from "@/components/common/CardSection";

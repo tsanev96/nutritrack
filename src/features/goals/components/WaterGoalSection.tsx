@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTrackerStore } from "@/stores/useTrackerStore";
 import CardSection from "@/components/common/CardSection";
-import SaveActions from "./SaveActions";
+import SaveActions from "../../../components/common/SaveActions";
 import HeadlineWrapper from "./HeadlineWrapper";
 import Rows from "./Rows";
 import InputField from "@/components/common/InputField";

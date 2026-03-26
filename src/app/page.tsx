@@ -1,4 +1,3 @@
-import CalorieTracker from "@/components/CalorieTracker";
 import Headline from "@/components/ui/Headline";
 
 export default function Home() {

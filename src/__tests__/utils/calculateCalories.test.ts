@@ -7,7 +7,7 @@ import type { Entry, Macros } from "@/types";
 
 describe("calcCalories", () => {
   it("calculates calories from macros", () => {
-    expect(calcCalories({ protein: 100, carbs: 200, fats: 50 })).toBe(1850);
+    expect(calcCalories({ protein: 100, carbs: 200, fats: 50 })).toBe(1650);
   });
 
   it("returns 0 when all macros are 0", () => {

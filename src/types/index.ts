@@ -113,6 +113,8 @@ export type TrackerState = {
   /** List of all check-ins measurements */
   checkIns: CheckIn[];
   waterGoals: number;
+  /** Last 20 unique foods the user added, synced across devices */
+  recentFoods: Entry[];
 };
 
 // The shape passed to hydrate() — everything except userId

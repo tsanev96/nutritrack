@@ -4,6 +4,7 @@ import {
   DEFAULT_FITNESS_GOALS,
   DEFAULT_MACRO_GOALS,
   DEFAULT_MICRO_GOALS,
+  DEFAULT_WATER_GOAL,
 } from "@/config/constants";
 
 /** "upsert" = insert if the row doesn't exist, update if it does.
@@ -129,6 +130,24 @@ export async function fetchMicroGoals(userId: string): Promise<MicroNutrients> {
     vitaminE: { value: vitamin_e ?? d.vitaminE.value, unit: "mg" },
     vitaminK: { value: vitamin_k ?? d.vitaminK.value, unit: "mcg" },
   };
+}
+
+export async function fetchWaterGoal(userId: string): Promise<number> {
+  const { data } = await supabase
+    .from("water_goals")
+    .select("amount_ml")
+    .eq("user_id", userId)
+    .single();
+
+  return data?.amount_ml ?? DEFAULT_WATER_GOAL;
+}
+
+export async function upsertWaterGoal(userId: string, amountMl: number) {
+  const { error } = await supabase.from("water_goals").upsert(
+    { user_id: userId, amount_ml: amountMl, updated_at: new Date().toISOString() },
+    { onConflict: "user_id" },
+  );
+  if (error) console.error("upsertWaterGoal:", error.message);
 }
 
 export async function upsertMicroGoals(userId: string, goals: MicroNutrients) {

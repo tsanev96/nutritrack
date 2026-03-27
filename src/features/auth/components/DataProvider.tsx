@@ -8,8 +8,8 @@
 
 import { useEffect, useState } from "react";
 import { useAuthUser } from "./AuthProvider";
-import { useTrackerStore } from "@/store/useTrackerStore";
 import { fetchAllUserData } from "@/lib/db";
+import { useTrackerStore } from "@/stores/useTrackerStore";
 
 type Props = Readonly<{
   children: React.ReactNode;

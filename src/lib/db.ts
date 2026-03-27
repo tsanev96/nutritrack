@@ -9,6 +9,7 @@ import {
   fetchFitnessGoals,
   fetchMacroGoals,
   fetchMicroGoals,
+  fetchWaterGoal,
 } from "@/features/goals/services/api";
 
 /**  Food logs are stored as flat rows (one row per food entry).
@@ -158,6 +159,47 @@ export async function upsertWaterIntake(
   if (error) console.error("upsertWaterIntake:", error.message);
 }
 
+export async function fetchRecentFoods(userId: string): Promise<Entry[]> {
+  const { data, error } = await supabase
+    .from("recent_foods")
+    .select("*")
+    .eq("user_id", userId)
+    .order("added_at", { ascending: false })
+    .limit(20);
+
+  if (error) throw error;
+
+  return (data ?? []).map((row) => ({
+    id: row.id,
+    name: row.name,
+    calories: row.calories,
+    protein: row.protein ?? undefined,
+    carbs: row.carbs ?? undefined,
+    fats: row.fats ?? undefined,
+    sodium: row.sodium ?? undefined,
+    sugar: row.sugar ?? undefined,
+  }));
+}
+
+export async function upsertRecentFood(userId: string, entry: Entry) {
+  // todo quanity grams/ounces and etc
+  const { error } = await supabase.from("recent_foods").upsert(
+    {
+      user_id: userId,
+      name: entry.name,
+      calories: entry.calories,
+      protein: entry.protein ?? null,
+      carbs: entry.carbs ?? null,
+      fats: entry.fats ?? null,
+      sodium: entry.sodium ?? null,
+      sugar: entry.sugar ?? null,
+      added_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id,name" },
+  );
+  if (error) console.error("upsertRecentFood:", error.message);
+}
+
 /** Fetches all user data in parallel. Used by DataProvider on login.
  * If you ever need to add a new data type, add it here and in DataProvider.
  */
@@ -169,6 +211,8 @@ export async function fetchAllUserData(userId: string) {
     fitnessGoals,
     checkIns,
     exerciseMap,
+    recentFoods,
+    waterGoals,
   ] = await Promise.all([
     fetchFoodLogs(userId),
     fetchMacroGoals(userId),
@@ -176,6 +220,8 @@ export async function fetchAllUserData(userId: string) {
     fetchFitnessGoals(userId),
     fetchCheckIns(userId),
     fetchExerciseLogs(userId),
+    fetchRecentFoods(userId),
+    fetchWaterGoal(userId),
   ]);
 
   // Merge exercise logs into the DayLog structure
@@ -184,7 +230,6 @@ export async function fetchAllUserData(userId: string) {
       logs[date] = {
         breakfast: [],
         lunch: [],
-
         dinner: [],
         snacks: [],
         exercises: [],
@@ -193,5 +238,13 @@ export async function fetchAllUserData(userId: string) {
     logs[date].exercises = exercises;
   }
 
-  return { logs, macroGoals, microNutrientGoals, fitnessGoals, checkIns };
+  return {
+    logs,
+    macroGoals,
+    microNutrientGoals,
+    fitnessGoals,
+    checkIns,
+    recentFoods,
+    waterGoals,
+  };
 }

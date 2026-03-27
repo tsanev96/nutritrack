@@ -20,12 +20,14 @@ import {
   insertExerciseLog,
   deleteExerciseLog,
   upsertWaterIntake,
+  upsertRecentFood,
 } from "@/lib/db";
 import { upsertCheckIn } from "@/features/checkIn/services/api";
 import {
   upsertFitnessGoals,
   upsertMacroGoals,
   upsertMicroGoals,
+  upsertWaterGoal,
 } from "@/features/goals/services/api";
 
 const emptyDayLog = (): DayLog => ({
@@ -50,24 +52,34 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
     fitnessGoals: DEFAULT_FITNESS_GOALS,
     checkIns: [],
     waterGoals: DEFAULT_WATER_GOAL,
+    recentFoods: [],
 
     setUserId: (userId) => set({ userId }),
 
     // Called once on login with all data fetched from Supabase
     hydrate: (payload) => set(payload),
 
+    // todo diff quantities
     addEntry: ({ date, meal, entry }) => {
       set((state) => {
         const dayLog = state.logs[date] ?? emptyDayLog();
+        const recentFoods = [
+          entry,
+          ...state.recentFoods.filter((f) => f.name !== entry.name),
+        ].slice(0, 30);
         return {
           logs: {
             ...state.logs,
             [date]: { ...dayLog, [meal]: [...dayLog[meal], entry] },
           },
+          recentFoods,
         };
       });
       const { userId } = get();
-      if (userId) insertFoodLog({ userId, date, meal, entry });
+      if (userId) {
+        insertFoodLog({ userId, date, meal, entry });
+        upsertRecentFood(userId, entry);
+      }
     },
 
     removeEntry: ({ date, meal, id }) => {
@@ -152,6 +164,8 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
 
     setWaterGoals: (ml: number) => {
       set({ waterGoals: ml });
+      const { userId } = get();
+      if (userId) upsertWaterGoal(userId, ml);
     },
 
     addCheckIn: (checkIn: CheckIn) => {
@@ -164,5 +178,6 @@ export const useTrackerStore = create<TrackerState & TrackerActions>()(
       const { userId } = get();
       if (userId) upsertCheckIn(userId, checkIn);
     },
+
   }),
 );

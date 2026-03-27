@@ -1,9 +1,9 @@
 "use client";
 
+import Headline from "@/components/ui/Headline";
+import Paragraph from "@/components/ui/Paragraph";
 import { useTrackerStore } from "@/stores/useTrackerStore";
-import Headline from "./common/Headline";
 import { getTodayDate } from "@/utils/dates";
-import Paragraph from "./common/Paragraph";
 
 type Props = Readonly<{
   date?: string;

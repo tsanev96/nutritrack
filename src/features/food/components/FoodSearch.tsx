@@ -5,6 +5,7 @@ import { useState } from "react";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import { calcCalories } from "@/utils/calculateCalories";
 import Button from "@/components/ui/Button";
+import InputWithButton from "@/components/common/InputWithButton";
 
 type Props = Readonly<{
   foodName: string;
@@ -45,39 +46,29 @@ export default function FoodSearch({
 
   return (
     <div>
-      <label
-        htmlFor="food-name"
-        className="mb-1 block text-sm font-medium text-gray-700"
-      >
-        Food name <span className="text-red-500">*</span>
-      </label>
-      <div className="flex gap-2">
-        <input
-          id="food-name"
-          type="text"
-          value={foodName}
-          onChange={(e) => {
-            setSuggestions([]);
-            setSearchError(null);
-            onFoodChange(e.target.value);
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleSearch();
-            }
-          }}
-          placeholder="e.g. Roasted chicken"
-          className="min-w-0 flex-1 rounded-md border px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <Button
-          onClick={handleSearch}
-          disabled={searching || !foodName.trim()}
-          className={`${searching || !foodName.trim() ? "cursor-none opacity-50" : ""}`}
-        >
-          {searching ? "..." : "Search"}
-        </Button>
-      </div>
+      <InputWithButton
+        id="food-name"
+        label="Food name"
+        type="text"
+        value={foodName}
+        onChange={(value: string) => {
+          setSuggestions([]);
+          setSearchError(null);
+          onFoodChange(value);
+        }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSearch();
+          }
+        }}
+        placeholder="e.g. Roasted chicken"
+        button={{
+          label: searching ? "..." : "Search",
+          onClick: () => { handleSearch(); },
+          disabled: searching || !foodName.trim(),
+        }}
+      />
 
       <ErrorMessage message={foodNameError} />
       <ErrorMessage message={searchError} />

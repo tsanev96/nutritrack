@@ -2,7 +2,7 @@ type Props = Readonly<{
   children: React.ReactNode;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "none";
   className?: string;
   disabled?: boolean;
 }>;
@@ -11,6 +11,7 @@ const VARIANTS = {
   primary: "bg-primary text-white hover:bg-primary-hover",
   secondary: "border text-gray-600 hover:bg-secondary-hover",
   ghost: "",
+  none: "",
 };
 
 export default function Button({

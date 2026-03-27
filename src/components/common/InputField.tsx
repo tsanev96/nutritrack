@@ -1,9 +1,11 @@
 "use client";
 
 type Props<T extends string | number> = Readonly<{
+  id?: string;
   label?: string;
   value: T;
   onChange: (value: T) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   error?: string;
   placeholder?: string;
   type: "text" | "number" | "email" | "password" | "date";
@@ -17,8 +19,10 @@ type Props<T extends string | number> = Readonly<{
 
 export default function InputField<T extends string | number>({
   value,
+  id,
   label,
   onChange,
+  onKeyDown,
   error,
   placeholder,
   type,
@@ -30,7 +34,7 @@ export default function InputField<T extends string | number>({
   step,
 }: Props<T>) {
   return (
-    <div>
+    <div className={className}>
       {label && (
         <label
           htmlFor={label}
@@ -40,11 +44,12 @@ export default function InputField<T extends string | number>({
         </label>
       )}
       <input
-        id={label}
+        id={id}
         disabled={disabled}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value as unknown as T)}
+        onKeyDown={(e) => (onKeyDown ? onKeyDown(e) : null)}
         placeholder={placeholder}
         min={min}
         max={max}

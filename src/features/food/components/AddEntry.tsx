@@ -4,8 +4,15 @@ import { useState } from "react";
 import type { Meal } from "@/types";
 import { useTrackerStore } from "@/stores/useTrackerStore";
 import FoodSearch from "./FoodSearch";
-import { calcCalories } from "@/utils/calculateCalories";
 import { FoodSuggestion } from "@/lib/foodApi";
+import { FoodUnit, LIQUID_UNITS, SOLID_UNITS, isLiquid } from "@/utils/units";
+import { calcUnitMacros } from "@/utils/calcUnitMacros";
+import SelectField from "@/components/common/SelectField";
+import InputField from "@/components/common/InputField";
+import Button from "@/components/ui/Button";
+import Headline from "@/components/ui/Headline";
+import Span from "@/components/ui/Span";
+
 type Props = Readonly<{
   meal: Meal;
   date: string;
@@ -16,19 +23,20 @@ export default function AddEntry({ meal, date, onClose }: Props) {
   const addEntry = useTrackerStore((s) => s.addEntry);
   const [foodName, setFoodName] = useState("");
   const [selectedFood, setSelectedFood] = useState<FoodSuggestion | null>(null);
-  const [grams, setGrams] = useState(100);
-  const [macros, setMacros] = useState({ fats: 0, protein: 0, carbs: 0 });
+  const [quantity, setQuantity] = useState(100);
+  const [unit, setUnit] = useState<FoodUnit>("g");
+  const [macros, setMacros] = useState({
+    fats: 0,
+    protein: 0,
+    carbs: 0,
+    calories: 0,
+  });
   const [errors, setErrors] = useState<{ foodName?: string }>({});
 
-  function handleGramsChange(g: number) {
-    setGrams(g);
-    if (selectedFood) {
-      setMacros({
-        protein: Math.round((selectedFood.protein * g) / 100),
-        carbs: Math.round((selectedFood.carbs * g) / 100),
-        fats: Math.round((selectedFood.fats * g) / 100),
-      });
-    }
+  function handleServingChange(qty: number, u: FoodUnit) {
+    setQuantity(qty);
+    setUnit(u);
+    if (selectedFood) setMacros(calcUnitMacros(selectedFood, qty, u));
   }
 
   function validate() {
@@ -38,11 +46,14 @@ export default function AddEntry({ meal, date, onClose }: Props) {
     return Object.keys(next).length === 0;
   }
 
+  const units =
+    selectedFood && isLiquid(selectedFood.servingSizeUnit)
+      ? LIQUID_UNITS
+      : SOLID_UNITS;
+
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm">
-      <h2 className="mb-4 capitalize font-medium text-gray-700">
-        Add to {meal}
-      </h2>
+      <Headline title={`Add to ${meal}`} />
       <form
         className="space-y-3"
         onSubmit={(e) => {
@@ -54,7 +65,7 @@ export default function AddEntry({ meal, date, onClose }: Props) {
             entry: {
               id: crypto.randomUUID(),
               name: foodName.trim(),
-              calories: calcCalories(macros),
+              calories: macros.calories,
               fats: macros.fats,
               protein: macros.protein,
               carbs: macros.carbs,
@@ -71,57 +82,62 @@ export default function AddEntry({ meal, date, onClose }: Props) {
             setSelectedFood(null);
           }}
           onFoodAdd={(food) => {
+            const defaultUnit: FoodUnit = isLiquid(food.servingSizeUnit)
+              ? "ml"
+              : "g";
             setSelectedFood(food);
             setFoodName(food.description);
-            setGrams(100);
-            setMacros({
-              protein: food.protein,
-              carbs: food.carbs,
-              fats: food.fats,
-            });
+            setQuantity(100);
+            setUnit(defaultUnit);
+            setMacros(calcUnitMacros(food, 100, defaultUnit));
           }}
         />
 
         {selectedFood && (
-          <div>
-            <label
-              htmlFor="serving-size"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Serving size (g)
-            </label>
-            <input
-              id="serving-size"
-              type="number"
-              min={1}
-              value={grams}
-              onChange={(e) => handleGramsChange(Number(e.target.value) || 1)}
-              className="w-full rounded-md border px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div className="flex gap-2">
+            <div className="flex-1">
+              <InputField
+                label="Quantity"
+                type="number"
+                min={0.1}
+                step={0.1}
+                value={quantity}
+                onChange={(v) => handleServingChange(Number(v) || 1, unit)}
+              />
+            </div>
+            <div className="flex-1">
+              <SelectField
+                label="Unit"
+                value={unit}
+                onChange={(v) => handleServingChange(quantity, v as FoodUnit)}
+                options={units.map((u) => ({ label: u, value: u }))}
+              />
+            </div>
           </div>
         )}
 
         <div className="rounded-md bg-slate-50 px-3 py-2 text-sm text-gray-600">
-          Calculated:{" "}
-          <span className="font-semibold text-gray-900">
-            {calcCalories(macros)} kcal
-          </span>
+          Calculated: <span className="font-semibold text-gray-900"></span>
+          <Span bold>{macros.calories} kcal</Span>
+          {selectedFood && (
+            <Span>
+              P {macros.protein}g · C {macros.carbs}g · F {macros.fats}g
+            </Span>
+          )}
         </div>
 
         <div className="flex gap-2 pt-1">
-          <button
-            type="submit"
-            className="flex-1 rounded-md bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
+          <Button type="submit" className="flex-1">
             Save
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="secondary"
             onClick={onClose}
-            className="flex-1 rounded-md border py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
+            className="flex-1"
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </div>

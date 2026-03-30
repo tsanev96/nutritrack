@@ -172,26 +172,18 @@ export default function FoodSearch({
                 variant="ghost"
                 className="min-w-0 flex-1 px-3 py-2 text-left hover:bg-slate-50"
               >
-                {/* {food.description} description */}
                 <div className="mt-0.5 text-xs text-gray-400">
+                  <Span>{food.brandName} </Span>
                   <Span>
-                    {food.protein == null ? undefined : `P ${food.protein}g`}
-                  </Span>
-                  {" · "}
+                    {food.protein == null ? undefined : `p${food.protein}g`}
+                  </Span>{" "}
                   <Span>
-                    {food.carbs == null ? undefined : `C ${food.carbs}g`}
-                  </Span>
-                  {" · "}
+                    {food.carbs == null ? undefined : `c${food.carbs}g`}
+                  </Span>{" "}
                   <Span>
-                    {food.fats == null ? undefined : `F ${food.fats}g`}
-                  </Span>
+                    {food.fats == null ? undefined : `f${food.fats}g`}
+                  </Span>{" "}
                   <Span>{food.calories} kcal</Span>
-                  {food.brandName && (
-                    <>
-                      <Span>Brand Name:</Span>
-                      <Span>{food.brandName}</Span>
-                    </>
-                  )}
                 </div>
               </Button>
               <IconButton

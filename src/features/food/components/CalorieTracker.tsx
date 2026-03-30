@@ -14,7 +14,7 @@ export default function CalorieTracker() {
   return (
     <div className="mb-6">
       <div className="mb-6 flex items-center justify-between">
-        <Headline title="Food Diary" variant="h1" color="white" />
+        <Headline title="Food Diary" variant="h1" />
         <input
           type="date"
           value={date}

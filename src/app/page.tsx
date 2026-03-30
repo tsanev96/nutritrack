@@ -1,12 +1,14 @@
 import Headline from "@/components/ui/Headline";
+import PageWrapper from "@/components/common/PageWrapper";
+import Paragraph from "@/components/ui/Paragraph";
 
 export default function Home() {
   return (
-    <section>
+    <PageWrapper>
       <Headline title="Welcome to the Calorie Tracker App!" />
-      <p className="mt-4 text-lg text-gray-600">
+      <Paragraph>
         Track your daily calorie intake and stay on top of your health goals.
-      </p>
-    </section>
+      </Paragraph>
+    </PageWrapper>
   );
 }

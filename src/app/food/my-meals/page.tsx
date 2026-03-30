@@ -1,3 +1,10 @@
+import PageWrapper from "@/components/common/PageWrapper";
+import Headline from "@/components/ui/Headline";
+
 export default function MyMealsPage() {
-  return <main className="mx-auto max-w-4xl px-6 py-8">My Meals</main>;
+  return (
+    <PageWrapper>
+      <Headline title="My Meals" variant="h1" />
+    </PageWrapper>
+  );
 }

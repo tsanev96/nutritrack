@@ -11,6 +11,7 @@ import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/config/constants";
 import InputField from "@/components/common/InputField";
 import Paragraph from "@/components/ui/Paragraph";
+import PageWrapper from "@/components/common/PageWrapper";
 
 type EditRowProps = Readonly<{
   checkIn: CheckIn;
@@ -76,8 +77,7 @@ export default function EditMeasurementsPage() {
   const sorted = [...checkIns].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <div className="mx-auto max-w-lg space-y-4">
+    <PageWrapper>
         <div className="flex items-center justify-between">
           <Headline title="Edit History" variant="h1" />
           <Link
@@ -135,7 +135,6 @@ export default function EditMeasurementsPage() {
             )}
           </CardSection>
         ))}
-      </div>
-    </div>
+    </PageWrapper>
   );
 }

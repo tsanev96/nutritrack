@@ -15,7 +15,6 @@ const STYLES: Record<Variant, string> = {
   h3: "text-xs font-semibold tracking-wide mb-3",
 };
 
-// todo title as children
 export default function Headline({
   title,
   variant = "h2",

@@ -5,6 +5,7 @@
 export const dynamic = "force-dynamic";
 
 import AddEntry from "@/features/food/components/AddEntry";
+import PageWrapper from "@/components/common/PageWrapper";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Meal } from "@/types";
 
@@ -16,8 +17,8 @@ export default function AddEntryPage() {
   const date = params.get("date") ?? "";
 
   return (
-    <main className="mx-auto max-w-xl px-6 py-8">
+    <PageWrapper>
       <AddEntry meal={meal} date={date} onClose={() => router.back()} />
-    </main>
+    </PageWrapper>
   );
 }

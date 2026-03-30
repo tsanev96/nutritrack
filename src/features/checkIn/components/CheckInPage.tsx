@@ -11,6 +11,7 @@ import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/config/constants";
 import InputField from "@/components/common/InputField";
 import Paragraph from "@/components/ui/Paragraph";
+import PageWrapper from "@/components/common/PageWrapper";
 
 const headers = ["Measurement", "Last entry", "Today"];
 
@@ -46,8 +47,7 @@ export default function CheckInPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <div className="mx-auto max-w-lg space-y-4">
+    <PageWrapper>
         <div className="flex items-center justify-between">
           <Headline title="Check-in" variant="h1" />
           <div className="flex items-center gap-3">
@@ -137,7 +137,6 @@ export default function CheckInPage() {
         {saved && (
           <Paragraph className="text-green-600">Check-in saved!</Paragraph>
         )}
-      </div>
-    </div>
+    </PageWrapper>
   );
 }

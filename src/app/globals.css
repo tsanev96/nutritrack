@@ -1,4 +1,9 @@
 @import "tailwindcss";
+@source "../../";
+
+/* @source "../../" tells v4 explicitly: "scan from the project root for any classes used in files here." 
+Now it finds all your component files and generates CSS for every class it sees. 
+*/
 
 :root {
   --background: #ffffff;

@@ -3,7 +3,7 @@ import { Color, COLOR_STYLES } from "../common/types";
 type Variant = "base" | "sm";
 
 type Props = Readonly<{
-  children: React.ReactNode;
+  children?: React.ReactNode | null;
   variant?: Variant;
   color?: Color;
   className?: string;
@@ -20,6 +20,8 @@ export default function Paragraph({
   color = "black",
   className,
 }: Props) {
+  if (!children) return null;
+
   return (
     <p
       className={`${STYLES[variant]} mb-2 ${COLOR_STYLES[color]} ${className ?? ""}`}

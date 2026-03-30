@@ -5,6 +5,7 @@ type Props = Readonly<{
   variant?: "primary" | "secondary" | "ghost" | "none";
   className?: string;
   disabled?: boolean;
+  ariaLabel?: string;
 }>;
 
 const VARIANTS = {
@@ -21,6 +22,7 @@ export default function Button({
   variant = "primary",
   className = "",
   disabled,
+  ariaLabel,
 }: Props) {
   return (
     <button
@@ -28,6 +30,7 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       className={`rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:opacity-40 ${disabled ? "cursor-none" : "cursor-pointer"} ${VARIANTS[variant]} ${className}`}
+      aria-label={ariaLabel}
     >
       {children}
     </button>

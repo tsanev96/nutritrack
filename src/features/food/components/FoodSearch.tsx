@@ -3,9 +3,13 @@
 import { FoodSuggestion, searchFood } from "@/lib/foodApi";
 import { useState } from "react";
 import ErrorMessage from "@/components/ui/ErrorMessage";
-import { calcCalories } from "@/utils/calculateCalories";
 import Button from "@/components/ui/Button";
+import IconButton from "@/components/ui/IconButton";
 import InputWithButton from "@/components/common/InputWithButton";
+import Span from "@/components/ui/Span";
+import { InformationCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { getNutrientSections } from "@/utils/foodNutrients";
+import Paragraph from "@/components/ui/Paragraph";
 
 type Props = Readonly<{
   foodName: string;
@@ -13,6 +17,87 @@ type Props = Readonly<{
   onFoodChange: (name: string) => void;
   onFoodAdd: (food: FoodSuggestion) => void;
 }>;
+
+function FoodInfoModal({
+  food,
+  onClose,
+}: Readonly<{ food: FoodSuggestion; onClose: () => void }>) {
+  const sections = getNutrientSections(food);
+
+  return (
+    <dialog
+      open
+      className="fixed inset-0 z-50 m-0 flex h-full w-full items-center justify-center bg-black/40 p-4"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+      }}
+    >
+      <div className="w-full max-w-sm rounded-lg bg-white p-5 shadow-xl">
+        <div className="mb-3 flex items-start justify-between">
+          <div>
+            <Paragraph>{food.description}</Paragraph>
+            <Paragraph>{food.brandName}</Paragraph>
+            {food.householdServing && (
+              <Paragraph>
+                Serving: {food.householdServing}
+                {food.servingSize
+                  ? ` (${food.servingSize}${food.servingSizeUnit})`
+                  : ""}
+              </Paragraph>
+            )}
+          </div>
+          <IconButton onClick={onClose} ariaLabel="close information dialog">
+            <XMarkIcon />
+          </IconButton>
+        </div>
+
+        <div className="space-y-3 text-xs text-gray-600">
+          <div className="flex justify-between border-b pb-2">
+            <Span>Calories</Span>
+            <Span>{food.calories} kcal per serving</Span>
+          </div>
+
+          {sections.map(({ title, rows }) => {
+            const visible = rows.filter((r) => r.value != null);
+            if (visible.length === 0) return null;
+            return (
+              <div key={title}>
+                <Paragraph variant="sm">{title}</Paragraph>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                  {visible.map((r) => (
+                    <Row
+                      key={r.label}
+                      label={r.label}
+                      value={r.value}
+                      unit={r.unit}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </dialog>
+  );
+}
+
+function Row({
+  label,
+  value,
+  unit,
+}: Readonly<{ label: string; value?: number; unit: string }>) {
+  if (value == null) return null;
+  return (
+    <>
+      <span className="text-gray-500">{label}</span>
+      <span className="text-right font-medium text-gray-700">
+        {value}
+        {unit}
+      </span>
+    </>
+  );
+}
 
 export default function FoodSearch({
   foodName,
@@ -23,9 +108,9 @@ export default function FoodSearch({
   const [suggestions, setSuggestions] = useState<FoodSuggestion[]>([]);
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [expandedFood, setExpandedFood] = useState<FoodSuggestion | null>(null);
 
   async function handleSearch() {
-    // todo new search should clear previous suggestions and errors
     if (!foodName.trim()) return;
     setSearching(true);
     setSearchError(null);
@@ -65,7 +150,9 @@ export default function FoodSearch({
         placeholder="e.g. Roasted chicken"
         button={{
           label: searching ? "..." : "Search",
-          onClick: () => { handleSearch(); },
+          onClick: () => {
+            handleSearch();
+          },
           disabled: searching || !foodName.trim(),
         }}
       />
@@ -73,34 +160,57 @@ export default function FoodSearch({
       <ErrorMessage message={foodNameError} />
       <ErrorMessage message={searchError} />
 
-      <div>
-        {suggestions.length > 0 && (
-          <ul className="mt-1 divide-y rounded-md border bg-white shadow-sm">
-            {suggestions.map((food) => (
-              <li key={food.fdcId}>
-                <Button
-                  onClick={() => {
-                    onFoodAdd(food);
-                    setSuggestions([]);
-                  }}
-                  variant="ghost"
-                  className="w-full px-3 py-2 text-left hover:bg-slate-50"
-                >
-                  <div className="line-clamp-1 text-sm text-gray-800">
-                    {food.description}
-                  </div>
-                  <div className="mt-0.5 text-xs text-gray-400">
-                    P {food.protein}g · C {food.carbs}g · F {food.fats}g
-                    <span className="ml-2 text-gray-500">
-                      {calcCalories(food)} kcal per 100g
-                    </span>
-                  </div>
-                </Button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {suggestions.length > 0 && (
+        <ul className="mt-1 divide-y rounded-md border bg-white shadow-sm">
+          {suggestions.map((food) => (
+            <li key={food.fdcId} className="flex items-center">
+              <Button
+                onClick={() => {
+                  onFoodAdd(food);
+                  setSuggestions([]);
+                }}
+                variant="ghost"
+                className="min-w-0 flex-1 px-3 py-2 text-left hover:bg-slate-50"
+              >
+                {/* {food.description} description */}
+                <div className="mt-0.5 text-xs text-gray-400">
+                  <Span>
+                    {food.protein == null ? undefined : `P ${food.protein}g`}
+                  </Span>
+                  {" · "}
+                  <Span>
+                    {food.carbs == null ? undefined : `C ${food.carbs}g`}
+                  </Span>
+                  {" · "}
+                  <Span>
+                    {food.fats == null ? undefined : `F ${food.fats}g`}
+                  </Span>
+                  <Span>{food.calories} kcal</Span>
+                  {food.brandName && (
+                    <>
+                      <Span>Brand Name:</Span>
+                      <Span>{food.brandName}</Span>
+                    </>
+                  )}
+                </div>
+              </Button>
+              <IconButton
+                onClick={() => setExpandedFood(food)}
+                ariaLabel="More info"
+              >
+                <InformationCircleIcon />
+              </IconButton>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {expandedFood && (
+        <FoodInfoModal
+          food={expandedFood}
+          onClose={() => setExpandedFood(null)}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 export type Color = "black" | "white";
 
 export const COLOR_STYLES: Record<Color, string> = {
-  black: "text-gray-900",
+  black: "text-[var(--color-black-1000)]",
   white: "text-white",
 };

@@ -1,39 +1,168 @@
 @import "tailwindcss";
 @source "../../";
 
-/* @source "../../" tells v4 explicitly: "scan from the project root for any classes used in files here." 
-Now it finds all your component files and generates CSS for every class it sees. 
-*/
-
+/* ─── Foundation scale (rocket.new --color-black-* palette) ─────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-black-100: #f8f9fa;
+  --color-black-200: #e9ecef;
+  --color-black-300: #dee2e6;
+  --color-black-400: #ced4da;
+  --color-black-500: #adb5bd;
+  --color-black-600: #6c757d;
+  --color-black-700: #495057;
+  --color-black-800: #343a40;
+  --color-black-900: #212529;
+  --color-black-1000: #101214;
+
+  --color-foundation-white: #ffffff;
+  --color-foundation-black: #101214;
+
+  /* ─── Semantic text colors ─────────────────────────────────────────────── */
+  --color-heading: var(--color-black-1000);
+  --color-subheading: var(--color-black-800);
+  --color-body: var(--color-black-600);
+  --color-caption: var(--color-black-500);
+  --color-placeholder: var(--color-black-500);
+  --color-link: #0057e6;
+
+  /* ─── Surface colors ───────────────────────────────────────────────────── */
+  --color-surface-default: var(--color-foundation-white);
+  --color-surface-secondary: var(--color-black-100);
+  --color-surface-subtle: var(--color-black-200);
+  --color-surface-card: var(--color-black-100);
+  --color-surface-card-secondary: var(--color-black-200);
+
+  /* ─── Outline / border ─────────────────────────────────────────────────── */
+  --color-outline-default: var(--color-black-400);
+  --color-outline-secondary: var(--color-black-300);
+  --color-outline-subtle: var(--color-black-600);
+
+  /* ─── Button ───────────────────────────────────────────────────────────── */
+  --color-surface-button-default: var(--color-black-1000);
+  --color-surface-button-default-hover: var(--color-black-800);
+  --color-surface-button-text: var(--color-foundation-white);
+
+  /* ─── Status ───────────────────────────────────────────────────────────── */
+  --color-error: #da2c38;
+  --color-success: #008e2d;
+  --color-warning: #ffd600;
+  --color-info: #0057e6;
+
+  /* ─── Shadows ──────────────────────────────────────────────────────────── */
+  --shadow-card: 0 0 12px 0 #00000017;
+  --shadow-dropdown: 0 0 12px 0 #00000017;
+
+  /* ─── Accent colors (rocket.new brand) ────────────────────────────────────── */
+  --color-accent-pink: #F4C7F2;
+  --color-accent-pink-strong: #b5179e;
+  --color-accent-orange: #fb8500;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-
-  /* Brand colors */
-  --color-primary: #ea580c;
-  --color-primary-hover: #c2410c;
-  --color-primary-subtle: #fff7ed;
-  --color-secondary: #fef3c7;
-  --color-secondary-hover: #fde68a;
-  --color-accent: #f59e0b;
-}
-
+/* ─── Dark mode ────────────────────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-black-100: #1e2125;
+    --color-black-200: #272b30;
+    --color-black-300: #343a40;
+    --color-black-400: #495057;
+
+    --color-heading: var(--color-foundation-white);
+    --color-subheading: var(--color-black-300);
+    --color-body: var(--color-black-500);
+    --color-caption: var(--color-black-600);
+    --color-placeholder: var(--color-black-600);
+    --color-link: #669af0;
+
+    --color-surface-default: #1e2125;
+    --color-surface-secondary: #272b30;
+    --color-surface-subtle: #343a40;
+    --color-surface-card: #272b30;
+    --color-surface-card-secondary: #343a40;
+
+    --color-outline-default: var(--color-black-400);
+    --color-outline-secondary: #343a40;
+
+    --color-surface-button-default: var(--color-foundation-white);
+    --color-surface-button-default-hover: var(--color-black-300);
+    --color-surface-button-text: var(--color-black-1000);
   }
 }
 
+/* ─── Tailwind theme mapping ────────────────────────────────────────────────── */
+@theme inline {
+  /* Font */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* Semantic text utilities — use text-heading, text-body, text-caption in components */
+  --color-heading: var(--color-heading);
+  --color-subheading: var(--color-subheading);
+  --color-body: var(--color-body);
+  --color-caption: var(--color-caption);
+
+  /* Surface utilities */
+  --color-surface: var(--color-surface-default);
+  --color-surface-secondary: var(--color-surface-secondary);
+  --color-surface-subtle: var(--color-surface-subtle);
+  --color-surface-card: var(--color-surface-card);
+
+  /* Border utilities */
+  --color-border: var(--color-outline-default);
+  --color-border-subtle: var(--color-outline-secondary);
+
+  /* Primary — rocket.new style: near-black button, white text */
+  --color-primary: var(--color-surface-button-default);
+  --color-primary-hover: var(--color-surface-button-default-hover);
+  --color-primary-foreground: var(--color-surface-button-text);
+
+  /* Accent — rocket.new pink */
+  --color-accent: var(--color-accent-pink);
+  --color-accent-strong: var(--color-accent-pink-strong);
+  --color-accent-orange: var(--color-accent-orange);
+
+  --color-placeholder: var(--color-placeholder);
+  --color-link: var(--color-link);
+  --color-error: var(--color-error);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+
+  /* Gray scale matching rocket.new's foundation */
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e9ecef;
+  --color-gray-300: #dee2e6;
+  --color-gray-400: #ced4da;
+  --color-gray-500: #adb5bd;
+  --color-gray-600: #6c757d;
+  --color-gray-700: #495057;
+  --color-gray-800: #343a40;
+  --color-gray-900: #212529;
+  --color-black-1000: var(--color-foundation-black);
+
+  /* Border radius matching rocket.new */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+
+  /* Letter spacing */
+  --tracking-tight: -0.025em;
+  --tracking-tighter: -0.05em;
+}
+
+/* ─── Base styles ───────────────────────────────────────────────────────────── */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface-default);
+  color: var(--color-body);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-heading);
+  }
+
+  ::placeholder {
+    color: var(--color-placeholder);
+  }
 }

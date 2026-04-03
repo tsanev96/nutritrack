@@ -1,12 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { MEALS } from "@/config/constants";
 import DailySummary from "./DailySummary";
-import NutritionSummaryTable from "./NutritionSummaryTable";
 import MealCard from "./MealCard";
 import { getTodayDate } from "@/utils/dates";
 import Headline from "@/components/ui/Headline";
+import SkeletonBlock from "@/components/common/SkeletonBlock";
+
+const NutritionSummaryTable = dynamic(() => import("./NutritionSummaryTable"), {
+  loading: () => <SkeletonBlock className="mt-4 h-24" />,
+});
 
 export default function CalorieTracker() {
   const [date, setDate] = useState(getTodayDate());

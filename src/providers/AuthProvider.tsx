@@ -8,7 +8,7 @@
 // It also listens for auth changes in real time (e.g. when you log out
 // in another tab, this will pick that up and redirect you immediately).
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import type { User } from "@supabase/supabase-js";
@@ -38,17 +38,12 @@ export default function AuthProvider({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // On first load, check if there's already a session saved in the browser
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // Listen for future auth changes (login, logout, token refresh)
+    // onAuthStateChange fires immediately with INITIAL_SESSION, so no need for getSession()
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     // Clean up the listener when the component unmounts
@@ -69,7 +64,8 @@ export default function AuthProvider({
     }
   }, [user, loading, pathname, router]);
 
-  // While we're checking auth status, show nothing (avoids flash of wrong content)
+  const value = useMemo(() => ({ user }), [user]);
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -82,5 +78,5 @@ export default function AuthProvider({
   const isPublicPath = PUBLIC_PATHS.includes(pathname);
   if (!user && !isPublicPath) return null;
 
-  return <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

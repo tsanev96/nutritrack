@@ -1,11 +1,9 @@
-import { Color, COLOR_STYLES } from "../common/types";
-
 type Variant = "base" | "sm";
 
 type Props = Readonly<{
   children?: React.ReactNode | null;
   variant?: Variant;
-  color?: Color;
+  color?: "body" | "white";
   className?: string;
 }>;
 
@@ -14,10 +12,15 @@ const STYLES: Record<Variant, string> = {
   sm: "text-sm",
 };
 
+const COLOR_STYLES: Record<"body" | "white", string> = {
+  body: "text-body",
+  white: "text-white",
+};
+
 export default function Paragraph({
   children,
   variant = "base",
-  color = "black",
+  color = "body",
   className,
 }: Props) {
   if (!children) return null;

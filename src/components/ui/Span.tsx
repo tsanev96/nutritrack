@@ -6,5 +6,5 @@ type Props = Readonly<{
 
 export default function Span({ children, className = "", bold }: Props) {
   if (!children) return null;
-  return <span className={`text-sm text-gray-600 ${bold ? "font-bold" : ""} ${className}`}>{children}</span>;
+  return <span className={`text-sm text-caption ${bold ? "font-bold" : ""} ${className}`}>{children}</span>;
 }

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
+
 import type { CheckIn } from "@/types";
 import Headline from "@/components/ui/Headline";
 import CardSection from "@/components/common/CardSection";
@@ -65,12 +66,10 @@ function EditRow({ checkIn, weightUnit, onSave }: EditRowProps) {
   );
 }
 
-// todo add date change
-
 export default function EditMeasurementsPage() {
-  const checkIns = useTrackerStore((s) => s.checkIns);
-  const addCheckIn = useTrackerStore((s) => s.addCheckIn);
-  const weightUnit = useTrackerStore((s) => s.fitnessGoals.weightUnit);
+  const checkIns = useStore((s) => s.checkIns);
+  const addCheckIn = useStore((s) => s.addCheckIn);
+  const weightUnit = useStore((s) => s.fitnessGoals.weightUnit);
 
   const [expandedDate, setExpandedDate] = useState<string | null>(null);
 

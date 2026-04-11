@@ -1,26 +1,22 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CheckInPage from "@/features/checkIn/components/CheckInPage";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 
-jest.mock("@/stores/useTrackerStore");
+jest.mock("@/stores/useStore");
 jest.mock("@/lib/supabase");
 jest.mock("next/link", () => ({
   __esModule: true,
-  default: ({
-    children,
-    href,
-  }: {
-    children: React.ReactNode;
-    href: string;
-  }) => <a href={href}>{children}</a>,
+  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
+    <a href={href}>{children}</a>
+  ),
 }));
 
 const mockAddCheckIn = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
-  (useTrackerStore as unknown as jest.Mock).mockImplementation((selector) =>
+  (useStore as unknown as jest.Mock).mockImplementation((selector) =>
     selector({
       checkIns: [],
       addCheckIn: mockAddCheckIn,
@@ -68,9 +64,8 @@ describe("CheckInPage", () => {
 
   it("renders the Edit history link", () => {
     render(<CheckInPage />);
-    expect(screen.getByRole("link", { name: /edit history/i })).toHaveAttribute(
-      "href",
-      "/measurements/edit",
-    );
+    expect(
+      screen.getByRole("link", { name: /edit history/i }),
+    ).toHaveAttribute("href", "/measurements/edit");
   });
 });

@@ -19,10 +19,6 @@ function makeUser(overrides = {}) {
   return { id: "user-1", email: "test@example.com", ...overrides };
 }
 
-function makeSession(user = makeUser()) {
-  return { data: { session: { user } } };
-}
-
 beforeEach(() => {
   jest.clearAllMocks();
 
@@ -43,26 +39,19 @@ function renderAuthProvider(children = <div>protected content</div>) {
 
 describe("AuthProvider — loading state", () => {
   it("shows a loading spinner while the session check is in progress", () => {
-    // getSession never resolves → stays in loading state
-    mockSupabaseClient.auth.getSession.mockReturnValue(new Promise(() => {}));
-
+    // onAuthStateChange callback never fired → stays loading
     renderAuthProvider();
-
     expect(screen.queryByText("protected content")).not.toBeInTheDocument();
-    // spinner is a div with animate-spin class
     expect(document.querySelector(".animate-spin")).toBeInTheDocument();
   });
 });
 
 describe("AuthProvider — authenticated user", () => {
-  beforeEach(() => {
-    mockSupabaseClient.auth.getSession.mockResolvedValue(makeSession());
-  });
-
   it("renders children on a protected path", async () => {
     (usePathname as jest.Mock).mockReturnValue("/");
-
     renderAuthProvider();
+
+    act(() => { authStateCallback("INITIAL_SESSION", { user: makeUser() }); });
 
     await waitFor(() =>
       expect(screen.getByText("protected content")).toBeInTheDocument(),
@@ -71,8 +60,9 @@ describe("AuthProvider — authenticated user", () => {
 
   it("does not redirect an authenticated user away from a protected path", async () => {
     (usePathname as jest.Mock).mockReturnValue("/");
-
     renderAuthProvider();
+
+    act(() => { authStateCallback("INITIAL_SESSION", { user: makeUser() }); });
 
     await waitFor(() =>
       expect(screen.getByText("protected content")).toBeInTheDocument(),
@@ -82,32 +72,29 @@ describe("AuthProvider — authenticated user", () => {
 
   it("redirects an authenticated user away from /auth/login", async () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/login");
-
     renderAuthProvider();
+
+    act(() => { authStateCallback("INITIAL_SESSION", { user: makeUser() }); });
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/"));
   });
 
   it("redirects an authenticated user away from /auth/signup", async () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/signup");
-
     renderAuthProvider();
+
+    act(() => { authStateCallback("INITIAL_SESSION", { user: makeUser() }); });
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/"));
   });
 });
 
 describe("AuthProvider — unauthenticated user", () => {
-  beforeEach(() => {
-    mockSupabaseClient.auth.getSession.mockResolvedValue({
-      data: { session: null },
-    });
-  });
-
   it("redirects to /auth/login when visiting a protected path", async () => {
     (usePathname as jest.Mock).mockReturnValue("/");
-
     renderAuthProvider();
+
+    act(() => { authStateCallback("INITIAL_SESSION", null); });
 
     await waitFor(() =>
       expect(mockReplace).toHaveBeenCalledWith("/auth/login"),
@@ -116,8 +103,9 @@ describe("AuthProvider — unauthenticated user", () => {
 
   it("renders children on /auth/login without redirecting", async () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/login");
-
     renderAuthProvider(<div>login form</div>);
+
+    act(() => { authStateCallback("INITIAL_SESSION", null); });
 
     await waitFor(() =>
       expect(screen.getByText("login form")).toBeInTheDocument(),
@@ -127,8 +115,9 @@ describe("AuthProvider — unauthenticated user", () => {
 
   it("renders children on /auth/signup without redirecting", async () => {
     (usePathname as jest.Mock).mockReturnValue("/auth/signup");
-
     renderAuthProvider(<div>signup form</div>);
+
+    act(() => { authStateCallback("INITIAL_SESSION", null); });
 
     await waitFor(() =>
       expect(screen.getByText("signup form")).toBeInTheDocument(),
@@ -139,20 +128,15 @@ describe("AuthProvider — unauthenticated user", () => {
 
 describe("AuthProvider — real-time auth state changes", () => {
   it("redirects to /auth/login when the user logs out", async () => {
-    // Start authenticated
-    mockSupabaseClient.auth.getSession.mockResolvedValue(makeSession());
     (usePathname as jest.Mock).mockReturnValue("/");
-
     renderAuthProvider();
 
+    act(() => { authStateCallback("INITIAL_SESSION", { user: makeUser() }); });
     await waitFor(() =>
       expect(screen.getByText("protected content")).toBeInTheDocument(),
     );
 
-    // Simulate logout event from Supabase
-    act(() => {
-      authStateCallback("SIGNED_OUT", null);
-    });
+    act(() => { authStateCallback("SIGNED_OUT", null); });
 
     await waitFor(() =>
       expect(mockReplace).toHaveBeenCalledWith("/auth/login"),
@@ -160,22 +144,15 @@ describe("AuthProvider — real-time auth state changes", () => {
   });
 
   it("stops redirecting after the user signs in via auth state change", async () => {
-    // Start unauthenticated on the login page
-    mockSupabaseClient.auth.getSession.mockResolvedValue({
-      data: { session: null },
-    });
     (usePathname as jest.Mock).mockReturnValue("/auth/login");
-
     renderAuthProvider(<div>login form</div>);
 
+    act(() => { authStateCallback("INITIAL_SESSION", null); });
     await waitFor(() =>
       expect(screen.getByText("login form")).toBeInTheDocument(),
     );
 
-    // Simulate sign-in event — now on /auth/login should redirect to /
-    act(() => {
-      authStateCallback("SIGNED_IN", { user: makeUser() });
-    });
+    act(() => { authStateCallback("SIGNED_IN", { user: makeUser() }); });
 
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith("/"));
   });
@@ -183,16 +160,14 @@ describe("AuthProvider — real-time auth state changes", () => {
 
 describe("AuthProvider — cleanup", () => {
   it("unsubscribes from auth state changes when unmounted", async () => {
-    mockSupabaseClient.auth.getSession.mockResolvedValue(makeSession());
-
     const { unmount } = renderAuthProvider();
 
+    act(() => { authStateCallback("INITIAL_SESSION", { user: makeUser() }); });
     await waitFor(() =>
       expect(screen.getByText("protected content")).toBeInTheDocument(),
     );
 
     unmount();
-
     expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
   });
 });

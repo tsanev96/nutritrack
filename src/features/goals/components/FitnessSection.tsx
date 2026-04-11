@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import type { ActivityLevel, WeeklyGoal } from "@/types";
 import CardSection from "@/components/common/CardSection";
 import SelectField from "@/components/common/SelectField";
@@ -26,8 +26,8 @@ const WEIGHT_UNITS = [
 ];
 
 export default function FitnessSection() {
-  const goals = useTrackerStore((s) => s.fitnessGoals);
-  const setGoals = useTrackerStore((s) => s.setFitnessGoals);
+  const goals = useStore((s) => s.fitnessGoals);
+  const setGoals = useStore((s) => s.setFitnessGoals);
 
   const [isEditing, setIsEditing] = useState(false);
   const [fitnessGoals, setFitnessGoals] = useState(goals);

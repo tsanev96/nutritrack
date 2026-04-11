@@ -1,6 +1,6 @@
 "use client";
 
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import {
   calcTotalNutrients,
   macroGoalsToNutrients,
@@ -22,13 +22,12 @@ const LABELS: Record<Nutrient, string> = {
 };
 
 export default function NutritionSummaryTable({ date }: Props) {
-  const macroGoals = useTrackerStore((s) => s.macroGoals);
-  const entries = useTrackerStore(
-    useShallow((s) => MEALS.flatMap((meal) => s.logs[date]?.[meal] ?? [])),
+  const macroGoals = useStore((s) => s.macroGoals);
+  const entries = useStore(
+    useShallow((s) => MEALS.flatMap((meal) => s.foodLogs[date]?.[meal] ?? [])),
   );
 
   const totals = calcTotalNutrients(entries);
-
   const goals = macroGoalsToNutrients(macroGoals);
 
   const getRemaining = (col: Nutrient): number | null => {

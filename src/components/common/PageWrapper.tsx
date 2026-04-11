@@ -10,7 +10,7 @@ export default function PageWrapper({ children, className = "" }: Props) {
     <section className="flex-1 bg-slate-50 p-6">
       <div
         className={twMerge(
-          "flex flex-col items-center mx-auto w-full max-w-xl md:max-w-2xl lg:max-w-4xl px-4 space-y-4",
+          "mx-auto w-full max-w-xl md:max-w-2xl lg:max-w-4xl px-4 space-y-4",
           className,
         )}
       >

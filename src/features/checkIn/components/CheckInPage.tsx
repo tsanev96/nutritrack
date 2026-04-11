@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
+
 import Headline from "@/components/ui/Headline";
 import CardSection from "@/components/common/CardSection";
 import Button from "@/components/ui/Button";
@@ -16,9 +17,9 @@ import PageWrapper from "@/components/common/PageWrapper";
 const headers = ["Measurement", "Last entry", "Today"];
 
 export default function CheckInPage() {
-  const checkIns = useTrackerStore((s) => s.checkIns);
-  const addCheckIn = useTrackerStore((s) => s.addCheckIn);
-  const weightUnit = useTrackerStore((s) => s.fitnessGoals.weightUnit);
+  const checkIns = useStore((s) => s.checkIns);
+  const addCheckIn = useStore((s) => s.addCheckIn);
+  const weightUnit = useStore((s) => s.fitnessGoals.weightUnit);
 
   const [date, setDate] = useState(getTodayDate());
   const [saved, setSaved] = useState(false);
@@ -66,7 +67,6 @@ export default function CheckInPage() {
           </div>
         </div>
 
-        {/* Weight */}
         <CardSection>
           <Headline title="Today's Weight" variant="h2" />
           <div className="mt-3 flex items-center gap-3">
@@ -87,7 +87,6 @@ export default function CheckInPage() {
           )}
         </CardSection>
 
-        {/* Measurements */}
         <CardSection>
           <Headline title="Measurements (cm)" variant="h2" />
           <table className="mt-3 w-full text-sm">

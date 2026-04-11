@@ -1,17 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useTrackerStore } from "@/stores/useTrackerStore";
 import { DEFAULT_MICRO_GOALS } from "@/config/constants";
 import MicronutrientsSection from "@/features/goals/components/MicronutrientsSection";
+import { useStore } from "@/stores/useStore";
 
-jest.mock("@/stores/useTrackerStore");
+jest.mock("@/stores/useStore");
 jest.mock("@/lib/supabase");
 
 const mockSetGoals = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
-  (useTrackerStore as unknown as jest.Mock).mockImplementation((selector) =>
+  (useStore as unknown as jest.Mock).mockImplementation((selector) =>
     selector({
       microNutrientGoals: DEFAULT_MICRO_GOALS,
       setMicroNutrientGoals: mockSetGoals,

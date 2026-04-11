@@ -1,7 +1,7 @@
 "use client";
 
 import { selectDailyCalories, selectConsumedCalories } from "@/stores/selectors";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import { formatDateLabel } from "@/utils/dates";
 
 type Props = Readonly<{
@@ -9,8 +9,8 @@ type Props = Readonly<{
 }>;
 
 export default function DailySummary({ date }: Props) {
-  const dailyGoal = useTrackerStore(selectDailyCalories);
-  const totalCalories = useTrackerStore(selectConsumedCalories(date));
+  const dailyGoal = useStore(selectDailyCalories);
+  const totalCalories = useStore(selectConsumedCalories(date));
 
   const progress = Math.min(100, Math.round((totalCalories / dailyGoal) * 100));
 

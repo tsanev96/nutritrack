@@ -1,15 +1,14 @@
 "use client";
 
 // DataProvider runs once when a user logs in.
-// It fetches all their data from Supabase in parallel, then
-// dumps it into the Zustand store via hydrate().
-// After that, the store takes over — components read from the store
-// and every store action writes back to Supabase automatically.
+// It fetches all their data from Supabase in parallel, then hydrates each
+// slice of the bound store. After that, components read from the store and
+// every store action writes back to Supabase automatically.
 
 import { useEffect, useState } from "react";
 import { useAuthUser } from "./AuthProvider";
+import { useStore } from "@/stores/useStore";
 import { fetchAllUserData } from "@/lib/db";
-import { useTrackerStore } from "@/stores/useTrackerStore";
 
 type Props = Readonly<{
   children: React.ReactNode;
@@ -17,8 +16,12 @@ type Props = Readonly<{
 
 export default function DataProvider({ children }: Props) {
   const { user } = useAuthUser();
-  const setUserId = useTrackerStore((s) => s.setUserId);
-  const hydrate = useTrackerStore((s) => s.hydrate);
+  const setUserId = useStore((s) => s.setUserId);
+  const hydrateFood = useStore((s) => s.hydrateFood);
+  const hydrateExercise = useStore((s) => s.hydrateExercise);
+  const hydrateWater = useStore((s) => s.hydrateWater);
+  const hydrateGoals = useStore((s) => s.hydrateGoals);
+  const hydrateCheckIns = useStore((s) => s.hydrateCheckIns);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,7 +34,13 @@ export default function DataProvider({ children }: Props) {
     setUserId(user.id);
 
     fetchAllUserData(user.id)
-      .then(hydrate)
+      .then(({ foodLogs, recentFoods, exerciseLogs, waterLogs, waterGoal, macroGoals, microNutrientGoals, fitnessGoals, checkIns }) => {
+        hydrateFood(foodLogs, recentFoods);
+        hydrateExercise(exerciseLogs);
+        hydrateWater(waterLogs, waterGoal);
+        hydrateGoals(macroGoals, microNutrientGoals, fitnessGoals);
+        hydrateCheckIns(checkIns);
+      })
       .catch((err) => console.error("Failed to load user data:", err))
       .finally(() => setLoading(false));
   }, [user?.id]);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import CardSection from "@/components/common/CardSection";
 import SaveActions from "../../../components/common/SaveActions";
 import HeadlineWrapper from "./HeadlineWrapper";
@@ -9,19 +9,19 @@ import Rows from "./Rows";
 import InputField from "@/components/common/InputField";
 
 export default function WaterGoalSection() {
-  const waterGoals = useTrackerStore((s) => s.waterGoals);
-  const setWaterGoals = useTrackerStore((s) => s.setWaterGoals);
+  const waterGoal = useStore((s) => s.waterGoal);
+  const setWaterGoal = useStore((s) => s.setWaterGoal);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [form, setForm] = useState(String(waterGoals));
+  const [form, setForm] = useState(String(waterGoal));
 
   function handleSave() {
-    setWaterGoals(Number(form) || 0);
+    setWaterGoal(Number(form) || 0);
     setIsEditing(false);
   }
 
   function handleCancel() {
-    setForm(String(waterGoals));
+    setForm(String(waterGoal));
     setIsEditing(false);
   }
 
@@ -41,7 +41,7 @@ export default function WaterGoalSection() {
           <SaveActions onSave={handleSave} onCancel={handleCancel} />
         </div>
       ) : (
-        <Rows rows={[{ label: "Daily goal", value: `${waterGoals} ml` }]} />
+        <Rows rows={[{ label: "Daily goal", value: `${waterGoal} ml` }]} />
       )}
     </CardSection>
   );

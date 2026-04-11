@@ -1,18 +1,19 @@
 import WaterGoalSection from "@/features/goals/components/WaterGoalSection";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-jest.mock("@/stores/useTrackerStore");
+jest.mock("@/stores/useStore");
 jest.mock("@/lib/supabase");
 
 const mockSetWaterGoal = jest.fn();
 
 beforeEach(() => {
   jest.clearAllMocks();
-  (useTrackerStore as unknown as jest.Mock).mockImplementation((selector) =>
+  (useStore as unknown as jest.Mock).mockImplementation((selector) =>
     selector({
-      setWaterGoals: mockSetWaterGoal,
+      waterGoal: 2000,
+      setWaterGoal: mockSetWaterGoal,
     }),
   );
 });
@@ -20,13 +21,13 @@ beforeEach(() => {
 describe("Water Goal Section", () => {
   it("renders the section heading", () => {
     render(<WaterGoalSection />);
-    expect(screen.getByText("Micronutrients")).toBeInTheDocument();
+    expect(screen.getByText("Water")).toBeInTheDocument();
   });
 
-  it("renders group labels", () => {
+  it("renders the daily goal in view mode", () => {
     render(<WaterGoalSection />);
-    expect(screen.getByText("water")).toBeInTheDocument();
-    expect(screen.getByText("daily goal")).toBeInTheDocument();
+    expect(screen.getByText("Daily goal")).toBeInTheDocument();
+    expect(screen.getByText("2000 ml")).toBeInTheDocument();
   });
 
   it("shows the Edit button in view mode", () => {
@@ -42,15 +43,14 @@ describe("Water Goal Section", () => {
     expect(screen.getByRole("button", { name: /cancel/i })).toBeInTheDocument();
   });
 
-  it("shows inputs in edit mode", async () => {
+  it("shows input in edit mode", async () => {
     const user = userEvent.setup();
     render(<WaterGoalSection />);
     await user.click(screen.getByRole("button", { name: /edit/i }));
-    const inputs = screen.getAllByRole("spinbutton");
-    expect(inputs.length).toBeGreaterThan(0);
+    expect(screen.getByRole("spinbutton")).toBeInTheDocument();
   });
 
-  it("calls setWaterGoals when save is clicked", async () => {
+  it("calls setWaterGoal when Save is clicked", async () => {
     const user = userEvent.setup();
     render(<WaterGoalSection />);
     await user.click(screen.getByRole("button", { name: /edit/i }));
@@ -58,7 +58,7 @@ describe("Water Goal Section", () => {
     expect(mockSetWaterGoal).toHaveBeenCalledTimes(1);
   });
 
-  it("returns to view mode after Cancel without calling setGoals", async () => {
+  it("returns to view mode after Cancel without calling setWaterGoal", async () => {
     const user = userEvent.setup();
     render(<WaterGoalSection />);
     await user.click(screen.getByRole("button", { name: /edit/i }));

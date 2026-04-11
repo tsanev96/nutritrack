@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { Meal } from "@/types";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import FoodSearch from "./FoodSearch";
 import { FoodSuggestion } from "@/lib/foodApi";
 import { FoodUnit, LIQUID_UNITS, SOLID_UNITS, isLiquid } from "@/utils/units";
@@ -20,7 +20,7 @@ type Props = Readonly<{
 }>;
 
 export default function AddEntry({ meal, date, onClose }: Props) {
-  const addEntry = useTrackerStore((s) => s.addEntry);
+  const addEntry = useStore((s) => s.addEntry);
   const [foodName, setFoodName] = useState("");
   const [selectedFood, setSelectedFood] = useState<FoodSuggestion | null>(null);
   const [quantity, setQuantity] = useState(100);

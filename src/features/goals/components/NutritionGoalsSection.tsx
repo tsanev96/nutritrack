@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import InputField from "@/components/common/InputField";
 import SaveActions from "../../../components/common/SaveActions";
 import type { CoreMacros } from "@/types";
@@ -11,8 +11,8 @@ import Rows from "./Rows";
 import HeadlineWrapper from "./HeadlineWrapper";
 
 export default function NutritionGoalsSection() {
-  const macroGoals = useTrackerStore((s) => s.macroGoals);
-  const setMacroGoals = useTrackerStore((s) => s.setMacroGoals);
+  const macroGoals = useStore((s) => s.macroGoals);
+  const setMacroGoals = useStore((s) => s.setMacroGoals);
 
   const [isEditing, setIsEditing] = useState(false);
 

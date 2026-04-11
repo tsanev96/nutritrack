@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <PageWrapper>
+    <PageWrapper className="flex flex-col align-center">
       <Headline title="Welcome to the Calorie Tracker App!" />
       <Paragraph className="mb-6">
         Track your daily calorie intake and stay on top of your health goals.

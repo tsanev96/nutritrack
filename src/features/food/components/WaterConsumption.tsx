@@ -2,7 +2,7 @@
 
 import Headline from "@/components/ui/Headline";
 import Paragraph from "@/components/ui/Paragraph";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import { getTodayDate } from "@/utils/dates";
 
 type Props = Readonly<{
@@ -10,10 +10,10 @@ type Props = Readonly<{
 }>;
 
 export default function WaterConsumption({ date }: Props) {
-  const waterConsumed = useTrackerStore(
-    (s) => s.logs[date ?? getTodayDate()]?.water,
+  const waterConsumed = useStore(
+    (s) => s.waterLogs[date ?? getTodayDate()],
   );
-  const waterGoal = useTrackerStore((s) => s.waterGoals);
+  const waterGoal = useStore((s) => s.waterGoal);
 
   return (
     <div>

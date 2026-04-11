@@ -1,7 +1,7 @@
 "use client";
 
 import { useShallow } from "zustand/shallow";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import { MEALS } from "@/config/constants";
 import { getTodayDate } from "@/utils/dates";
 import Rows from "./Rows";
@@ -10,7 +10,7 @@ import HeadlineWrapper from "./HeadlineWrapper";
 
 export default function MealsCalories() {
   const today = getTodayDate();
-  const dayLog = useTrackerStore(useShallow((s) => s.logs[today] ?? {}));
+  const dayLog = useStore(useShallow((s) => s.foodLogs[today] ?? {}));
 
   const rows = MEALS.map((meal) => {
     const entries = dayLog[meal] ?? [];

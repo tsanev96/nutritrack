@@ -1,6 +1,6 @@
 "use client";
 
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import PageWrapper from "@/components/common/PageWrapper";
 import Headline from "@/components/ui/Headline";
 import CardSection from "@/components/common/CardSection";
@@ -32,7 +32,7 @@ function FoodCard({ food }: Readonly<{ food: Entry }>) {
 }
 
 export default function FoodDatabasePage() {
-  const recentFoods = useTrackerStore((s) => s.recentFoods);
+  const recentFoods = useStore((s) => s.recentFoods);
 
   if (recentFoods.length === 0)
     return (

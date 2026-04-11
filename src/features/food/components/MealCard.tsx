@@ -1,7 +1,7 @@
 "use client";
 
 import type { Meal } from "@/types";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import Link from "next/link";
 import { useShallow } from "zustand/shallow";
 import TableCaloriesMacros from "./TableCaloriesMacros";
@@ -10,10 +10,10 @@ import Headline from "@/components/ui/Headline";
 type Props = Readonly<{ meal: Meal; date: string }>;
 
 export default function MealCard({ meal, date }: Props) {
-  const entries = useTrackerStore(
-    useShallow((s) => s.logs[date]?.[meal] ?? []),
+  const entries = useStore(
+    useShallow((s) => s.foodLogs[date]?.[meal] ?? []),
   );
-  const removeEntry = useTrackerStore((s) => s.removeEntry);
+  const removeEntry = useStore((s) => s.removeEntry);
 
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm">

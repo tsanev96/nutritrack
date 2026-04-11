@@ -1,15 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useTrackerStore } from "@/stores/useTrackerStore";
+import { useStore } from "@/stores/useStore";
 import { useShallow } from "zustand/shallow";
 import Button from "@/components/ui/Button";
 import InputField from "@/components/common/InputField";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 
 type Props = Readonly<{ date: string }>;
-
-// todo form component that can be reused between food and exercise cards
 
 export default function ExerciseCard({ date }: Props) {
   const [showForm, setShowForm] = useState(false);
@@ -18,11 +16,11 @@ export default function ExerciseCard({ date }: Props) {
   const [durationMinutes, setDurationMinutes] = useState<number | "">("");
   const [nameError, setNameError] = useState("");
 
-  const exercises = useTrackerStore(
-    useShallow((s) => s.logs[date]?.exercises ?? []),
+  const exercises = useStore(
+    useShallow((s) => s.exerciseLogs[date] ?? []),
   );
-  const addExercise = useTrackerStore((s) => s.addExercise);
-  const removeExercise = useTrackerStore((s) => s.removeExercise);
+  const addExercise = useStore((s) => s.addExercise);
+  const removeExercise = useStore((s) => s.removeExercise);
 
   const totalBurned = exercises.reduce((sum, e) => sum + e.caloriesBurned, 0);
 
@@ -101,7 +99,6 @@ export default function ExerciseCard({ date }: Props) {
               }
               type="number"
               className="w-full rounded-md border px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-              // min={0}
             />
           </div>
           <div className="flex gap-2">
@@ -132,9 +129,7 @@ export default function ExerciseCard({ date }: Props) {
                   {ex.name}
                 </td>
                 <td className="px-3 py-2 text-right text-gray-500">
-                  {ex.durationMinutes !== undefined
-                    ? `${ex.durationMinutes} min`
-                    : "—"}
+                  {ex.durationMinutes === undefined ? "—" : `${ex.durationMinutes} min`}
                 </td>
                 <td className="px-3 py-2 text-right text-gray-600">
                   {ex.caloriesBurned}

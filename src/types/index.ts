@@ -74,22 +74,22 @@ export type WeeklyGoal = "lose" | "maintain" | "gain";
 export type WEIGHT_UNITS = "kg" | "lbs";
 
 export type FitnessGoals = {
-  targetWeight: number;
+  targetWeight?: number | null;
   weightUnit: "kg" | "lbs";
   activityLevel: ActivityLevel;
   weeklyGoal: WeeklyGoal;
 };
 
 export type BodyMeasurements = {
-  neck?: number;
-  waist?: number;
-  hips?: number;
+  neck?: number | null;
+  waist?: number | null;
+  hips?: number | null;
 };
 
 export type CheckIn = {
   /**  YYYY-MM-DD */
   date: string;
-  weight?: number;
+  weight?: number | null;
   measurements: BodyMeasurements;
 };
 

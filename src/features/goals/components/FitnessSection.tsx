@@ -45,7 +45,7 @@ export default function FitnessSection() {
   const rows = [
     {
       label: "Target Weight",
-      value: `${goals.targetWeight} ${goals.weightUnit}`,
+      value: goals.targetWeight == null ? "—" : `${goals.targetWeight} ${goals.weightUnit}`,
     },
     { label: "Activity Level", value: ACTIVITY_LABELS[goals.activityLevel] },
     { label: "Weekly Goal", value: WEEKLY_GOAL_LABELS[goals.weeklyGoal] },
@@ -71,11 +71,11 @@ export default function FitnessSection() {
             <input
               type="number"
               min={0}
-              value={fitnessGoals.targetWeight}
+              value={fitnessGoals.targetWeight ?? ""}
               onChange={(e) =>
                 setFitnessGoals((p) => ({
                   ...p,
-                  targetWeight: Number(e.target.value) || 0,
+                  targetWeight: e.target.value === "" ? null : Number(e.target.value),
                 }))
               }
               className="min-w-0 flex-1 rounded-md border px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"

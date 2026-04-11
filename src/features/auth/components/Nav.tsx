@@ -38,10 +38,10 @@ export default function Nav() {
   if (pathname.startsWith("/auth")) return null;
 
   return (
-    <nav className="border-b bg-white">
+    <nav className="border-b border-outline bg-surface-card">
       {/* Top row: logo + section tabs + user */}
       <div className="mx-auto flex max-w-4xl items-center gap-6 px-6 py-3">
-        <span className="font-semibold text-gray-900">Nutri Tracker</span>
+        <span className="font-semibold text-heading">Nutri Tracker</span>
         <div className="flex gap-1">
           {SECTIONS.map((section) => {
             const isActive = section.label === activeSection.label;
@@ -49,10 +49,10 @@ export default function Nav() {
               <Link
                 key={section.label}
                 href={section.links[0].href}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-blue-50 text-blue-600"
-                    : "text-gray-500 hover:text-gray-900"
+                    ? "bg-sage/10 text-sage"
+                    : "text-body hover:text-sage"
                 }`}
               >
                 {section.label}
@@ -64,10 +64,10 @@ export default function Nav() {
         {/* User email + logout, pushed to the right */}
         {user && (
           <div className="ml-auto flex items-center gap-3">
-            <span className="text-xs text-gray-400">{user.email}</span>
+            <span className="text-xs text-caption">{user.email}</span>
             <Button
               onClick={() => supabase.auth.signOut()}
-              className="text-xs text-gray-500 hover:text-gray-900 transition-colors"
+              className="text-xs text-body hover:text-sage transition-colors"
               variant="none"
             >
               Sign out
@@ -82,10 +82,10 @@ export default function Nav() {
           <Link
             key={href}
             href={href}
-            className={`text-sm transition-colors ${
+            className={`text-sm transition-colors cursor-pointer ${
               pathname === href
-                ? "border-b-2 border-blue-600 pb-1 font-medium text-blue-600"
-                : "pb-1 text-gray-500 hover:text-gray-900"
+                ? "border-b-2 border-sage pb-1 font-medium text-sage"
+                : "pb-1 text-body hover:text-sage"
             }`}
           >
             {label}

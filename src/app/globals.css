@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @source "../../";
 
-/* ─── Foundation scale (rocket.new --color-black-* palette) ─────────────── */
+/* ─── Foundation scale ───────────────────────────────────────────────────── */
 :root {
   --color-black-100: #f8f9fa;
   --color-black-200: #e9ecef;
@@ -17,29 +17,38 @@
   --color-foundation-white: #ffffff;
   --color-foundation-black: #101214;
 
+  /* ─── Calm & Organic palette ───────────────────────────────────────────── */
+  --color-sage: #7C8363;
+  --color-sage-dark: #5f6549;
+  --color-mint: #80C4B7;
+  --color-terracotta: #E07A5F;
+  --color-sand: #E9C46A;
+  --color-cream: #F6EDE3;
+  --color-cream-dark: #ede0d3;
+
   /* ─── Semantic text colors ─────────────────────────────────────────────── */
-  --color-heading: var(--color-black-1000);
-  --color-subheading: var(--color-black-800);
-  --color-body: var(--color-black-600);
+  --color-heading: #2e2e2e;
+  --color-subheading: #4a4a4a;
+  --color-body: #5c5c5c;
   --color-caption: var(--color-black-500);
   --color-placeholder: var(--color-black-500);
-  --color-link: #0057e6;
+  --color-link: var(--color-sage);
 
   /* ─── Surface colors ───────────────────────────────────────────────────── */
-  --color-surface-default: var(--color-foundation-white);
-  --color-surface-secondary: var(--color-black-100);
-  --color-surface-subtle: var(--color-black-200);
-  --color-surface-card: var(--color-black-100);
-  --color-surface-card-secondary: var(--color-black-200);
+  --color-surface-default: var(--color-cream);
+  --color-surface-secondary: var(--color-cream-dark);
+  --color-surface-subtle: #e4d5c6;
+  --color-surface-card: var(--color-foundation-white);
+  --color-surface-card-secondary: var(--color-cream);
 
   /* ─── Outline / border ─────────────────────────────────────────────────── */
-  --color-outline-default: var(--color-black-400);
-  --color-outline-secondary: var(--color-black-300);
+  --color-outline-default: #c8b8a8;
+  --color-outline-secondary: #d9ccc0;
   --color-outline-subtle: var(--color-black-600);
 
   /* ─── Button ───────────────────────────────────────────────────────────── */
-  --color-surface-button-default: var(--color-black-1000);
-  --color-surface-button-default-hover: var(--color-black-800);
+  --color-surface-button-default: var(--color-sage);
+  --color-surface-button-default-hover: var(--color-sage-dark);
   --color-surface-button-text: var(--color-foundation-white);
 
   /* ─── Status ───────────────────────────────────────────────────────────── */
@@ -52,10 +61,10 @@
   --shadow-card: 0 0 12px 0 #00000017;
   --shadow-dropdown: 0 0 12px 0 #00000017;
 
-  /* ─── Accent colors (rocket.new brand) ────────────────────────────────────── */
-  --color-accent-pink: #F4C7F2;
-  --color-accent-pink-strong: #b5179e;
-  --color-accent-orange: #fb8500;
+  /* ─── Accent colors ────────────────────────────────────────────────────── */
+  --color-accent-pink: var(--color-sand);
+  --color-accent-pink-strong: var(--color-terracotta);
+  --color-accent-orange: var(--color-terracotta);
 }
 
 /* ─── Dark mode ────────────────────────────────────────────────────────────── */
@@ -66,25 +75,25 @@
     --color-black-300: #343a40;
     --color-black-400: #495057;
 
-    --color-heading: var(--color-foundation-white);
-    --color-subheading: var(--color-black-300);
+    --color-heading: #f0ebe5;
+    --color-subheading: #c9bfb5;
     --color-body: var(--color-black-500);
     --color-caption: var(--color-black-600);
     --color-placeholder: var(--color-black-600);
-    --color-link: #669af0;
+    --color-link: var(--color-mint);
 
-    --color-surface-default: #1e2125;
-    --color-surface-secondary: #272b30;
-    --color-surface-subtle: #343a40;
-    --color-surface-card: #272b30;
-    --color-surface-card-secondary: #343a40;
+    --color-surface-default: #23201d;
+    --color-surface-secondary: #2c2724;
+    --color-surface-subtle: #38302b;
+    --color-surface-card: #2c2724;
+    --color-surface-card-secondary: #38302b;
 
-    --color-outline-default: var(--color-black-400);
-    --color-outline-secondary: #343a40;
+    --color-outline-default: #4a3f37;
+    --color-outline-secondary: #38302b;
 
-    --color-surface-button-default: var(--color-foundation-white);
-    --color-surface-button-default-hover: var(--color-black-300);
-    --color-surface-button-text: var(--color-black-1000);
+    --color-surface-button-default: var(--color-sage);
+    --color-surface-button-default-hover: var(--color-sage-dark);
+    --color-surface-button-text: var(--color-foundation-white);
   }
 }
 
@@ -109,15 +118,22 @@
   --color-border: var(--color-outline-default);
   --color-border-subtle: var(--color-outline-secondary);
 
-  /* Primary — rocket.new style: near-black button, white text */
+  /* Primary — sage green button */
   --color-primary: var(--color-surface-button-default);
   --color-primary-hover: var(--color-surface-button-default-hover);
   --color-primary-foreground: var(--color-surface-button-text);
 
-  /* Accent — rocket.new pink */
+  /* Accent — warm sand + terracotta */
   --color-accent: var(--color-accent-pink);
   --color-accent-strong: var(--color-accent-pink-strong);
   --color-accent-orange: var(--color-accent-orange);
+
+  /* Organic palette utilities */
+  --color-sage: var(--color-sage);
+  --color-mint: var(--color-mint);
+  --color-terracotta: var(--color-terracotta);
+  --color-sand: var(--color-sand);
+  --color-cream: var(--color-cream);
 
   --color-placeholder: var(--color-placeholder);
   --color-link: var(--color-link);

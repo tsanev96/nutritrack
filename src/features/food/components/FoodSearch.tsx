@@ -1,6 +1,6 @@
 "use client";
 
-import { FoodSuggestion, searchFood } from "@/lib/foodApi";
+import { FoodSuggestion, searchFood, searchFoodByBarcode } from "@/lib/foodApi";
 import { useState } from "react";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 import { Button } from "@/components/ui/button";
@@ -99,6 +99,8 @@ function Row({
   );
 }
 
+type SearchMode = "name" | "barcode";
+
 export default function FoodSearch({
   foodName,
   foodNameError,
@@ -109,6 +111,7 @@ export default function FoodSearch({
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [expandedFood, setExpandedFood] = useState<FoodSuggestion | null>(null);
+  const [mode, setMode] = useState<SearchMode>("name");
 
   async function handleSearch() {
     if (!foodName.trim()) return;
@@ -116,7 +119,9 @@ export default function FoodSearch({
     setSearchError(null);
     setSuggestions([]);
     try {
-      const results = await searchFood(foodName.trim());
+      const results = await (mode === "barcode"
+        ? searchFoodByBarcode(foodName.trim())
+        : searchFood(foodName.trim()));
       if (results.length === 0) {
         setSearchError("No results found");
         return;
@@ -129,12 +134,31 @@ export default function FoodSearch({
     }
   }
 
+  function handleModeChange(next: SearchMode) {
+    setMode(next);
+    onFoodChange("");
+    setSuggestions([]);
+    setSearchError(null);
+  }
+
   return (
     <div>
+      <div className="mb-2 flex gap-3 text-sm">
+        {(["name", "barcode"] as SearchMode[]).map((m) => (
+          <Button
+            key={m}
+            onClick={() => handleModeChange(m)}
+            className={`capitalize ${mode === m ? "font-semibold text-primary underline" : "text-gray-400"}`}
+            variant="link"
+          >
+            {m}
+          </Button>
+        ))}
+      </div>
+
       <InputWithButton
         id="food-name"
-        label="Food name"
-        type="text"
+        type={mode === "barcode" ? "number" : "text"}
         value={foodName}
         onChange={(value: string) => {
           setSuggestions([]);
@@ -147,7 +171,9 @@ export default function FoodSearch({
             handleSearch();
           }
         }}
-        placeholder="e.g. Roasted chicken"
+        placeholder={
+          mode === "barcode" ? "e.g. 012345678901" : "e.g. Roasted chicken"
+        }
         button={{
           label: searching ? "..." : "Search",
           onClick: () => {

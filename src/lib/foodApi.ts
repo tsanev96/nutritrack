@@ -77,18 +77,8 @@ function getNutrientValue(
   return nutrients.find((n) => n.nutrientId === id)?.value;
 }
 
-export async function searchFood(query: string): Promise<FoodSuggestion[]> {
-  const key = process.env.NEXT_PUBLIC_USDA_API_KEY;
-  if (key == null)
-    throw new Error("NEXT_PUBLIC_USDA_API_KEY is not set in .env.local");
-
-  const url = `${USDA_BASE}/foods/search?query=${encodeURIComponent(query)}&pageSize=6&api_key=${key}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`USDA API error: ${res.status}`);
-
-  const data: SearchResponse = await res.json();
-
-  return data.foods.map(
+function mapFoods(foods: RawFood[]): FoodSuggestion[] {
+  return foods.map(
     ({
       fdcId,
       description,
@@ -126,4 +116,70 @@ export async function searchFood(query: string): Promise<FoodSuggestion[]> {
       };
     },
   );
+}
+
+function getApiKey(): string {
+  const key = process.env.NEXT_PUBLIC_USDA_API_KEY;
+  if (key == null)
+    throw new Error("NEXT_PUBLIC_USDA_API_KEY is not set in .env.local");
+  return key;
+}
+
+export async function searchFood(query: string): Promise<FoodSuggestion[]> {
+  const key = getApiKey();
+  const url = `${USDA_BASE}/foods/search?query=${encodeURIComponent(query)}&pageSize=6&api_key=${key}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`USDA API error: ${res.status}`);
+  const data: SearchResponse = await res.json();
+  return mapFoods(data.foods);
+}
+
+// ─── Open Food Facts (barcode lookup) ────────────────────────────────────────
+
+const OFF_BASE = "https://world.openfoodfacts.org/api/v2";
+
+type OFFProduct = {
+  product_name?: string;
+  brands?: string;
+  serving_size?: string;
+  nutriments?: Record<string, number>;
+};
+
+type OFFResponse = {
+  status: number; // 1 = found, 0 = not found
+  product?: OFFProduct;
+};
+
+export async function searchFoodByBarcode(
+  barcode: string,
+): Promise<FoodSuggestion[]> {
+  const res = await fetch(`${OFF_BASE}/product/${encodeURIComponent(barcode)}`);
+  if (!res.ok) throw new Error(`Open Food Facts API error: ${res.status}`);
+
+  const data: OFFResponse = await res.json();
+  if (data.status === 0 || !data.product) return [];
+
+  const {
+    product_name,
+    brands,
+    serving_size,
+    nutriments: n = {},
+  } = data.product;
+
+  return [
+    {
+      fdcId: Number(barcode), // used as a unique key in the UI
+      description: product_name ?? barcode,
+      brandName: brands ?? undefined,
+      householdServing: serving_size ?? undefined,
+      calories: n["energy-kcal_serving"] ?? n["energy-kcal_100g"] ?? 0,
+      protein: n["proteins_serving"] ?? n["proteins_100g"] ?? 0,
+      carbs: n["carbohydrates_serving"] ?? n["carbohydrates_100g"] ?? 0,
+      fats: n["fat_serving"] ?? n["fat_100g"] ?? 0,
+      saturatedFat: n["saturated-fat_serving"] ?? n["saturated-fat_100g"],
+      sugar: n["sugars_serving"] ?? n["sugars_100g"],
+      fiber: n["fiber_serving"] ?? n["fiber_100g"],
+      sodium: n["sodium_serving"] ?? n["sodium_100g"],
+    },
+  ];
 }

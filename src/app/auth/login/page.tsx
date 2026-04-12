@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import InputField from "@/components/common/InputField";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 

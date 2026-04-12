@@ -8,6 +8,7 @@ import MealCard from "./MealCard";
 import { getTodayDate } from "@/utils/dates";
 import Headline from "@/components/ui/Headline";
 import SkeletonBlock from "@/components/common/SkeletonBlock";
+import DatePickerDropDown from "@/components/common/DatePickerDropDown";
 
 const NutritionSummaryTable = dynamic(() => import("./NutritionSummaryTable"), {
   loading: () => <SkeletonBlock className="mt-4 h-24" />,
@@ -20,12 +21,11 @@ export default function CalorieTracker() {
     <div className="mb-6">
       <div className="mb-6 flex items-center justify-between">
         <Headline title="Food Diary" variant="h1" />
-        <input
-          type="date"
+        <DatePickerDropDown
+          label="Eating date"
           value={date}
-          max={getTodayDate()}
-          onChange={(e) => setDate(e.target.value)}
-          className="rounded-md border px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
+          onChange={setDate}
+          maxDate={getTodayDate()}
         />
       </div>
 

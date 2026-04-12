@@ -6,7 +6,7 @@ import { useStore } from "@/stores/useStore";
 
 import Headline from "@/components/ui/Headline";
 import CardSection from "@/components/common/CardSection";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { getTodayDate } from "@/utils/dates";
 import { addCheckInMeasurements, getMeasurementsValues } from "@/utils/checkIn";
 import { MEASUREMENT_KEYS } from "@/config/constants";

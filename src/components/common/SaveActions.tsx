@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 type Props = Readonly<{
   onSave: () => void;
@@ -11,7 +11,7 @@ export default function SaveActions({ onCancel, onSave }: Props) {
       <Button onClick={onSave} className="flex-1">
         Save
       </Button>
-      <Button onClick={onCancel} variant="secondary" className="flex-1">
+      <Button onClick={onCancel} variant="outline" className="flex-1">
         Cancel
       </Button>
     </div>

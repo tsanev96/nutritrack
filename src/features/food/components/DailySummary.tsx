@@ -1,9 +1,19 @@
 "use client";
 
-import { selectDailyCalories, selectConsumedCalories, selectRemainingCalories } from "@/stores/selectors";
+import Paragraph from "@/components/ui/Paragraph";
+import {
+  selectDailyCalories,
+  selectConsumedCalories,
+  selectRemainingCalories,
+} from "@/stores/selectors";
 import { useStore } from "@/stores/useStore";
 import { formatDateLabel } from "@/utils/dates";
-import { RadialBarChart, RadialBar, ResponsiveContainer, PolarAngleAxis } from "recharts";
+import {
+  RadialBarChart,
+  RadialBar,
+  ResponsiveContainer,
+  PolarAngleAxis,
+} from "recharts";
 
 type Props = Readonly<{
   date: string;
@@ -22,7 +32,8 @@ export default function DailySummary({ date }: Props) {
 
   return (
     <section className="mb-6 rounded-lg bg-white p-4 shadow-sm">
-      <p className="mb-3 text-sm text-gray-500">{formatDateLabel(date)}</p>
+      <p className="mb-3 text-sm text-gray-500"></p>
+      <Paragraph>{formatDateLabel(date)}</Paragraph>
       <div className="flex items-center gap-4">
         <div className="relative h-32 w-32 shrink-0">
           <ResponsiveContainer width="100%" height="100%">
@@ -51,17 +62,32 @@ export default function DailySummary({ date }: Props) {
 
         <div className="flex flex-col gap-2">
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide">Consumed</p>
-            <p className="text-xl font-semibold text-gray-800">{totalCalories} <span className="text-sm font-normal text-gray-500">kcal</span></p>
+            <p className="text-xs text-gray-400 uppercase tracking-wide">
+              Consumed
+            </p>
+            <p className="text-xl font-semibold text-gray-800">
+              {totalCalories}{" "}
+              <span className="text-sm font-normal text-gray-500">kcal</span>
+            </p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide">Goal</p>
-            <p className="text-base font-medium text-gray-600">{dailyGoal} <span className="text-sm font-normal text-gray-500">kcal</span></p>
+            <p className="text-xs text-gray-400 uppercase tracking-wide">
+              Goal
+            </p>
+            <p className="text-base font-medium text-gray-600">
+              {dailyGoal}{" "}
+              <span className="text-sm font-normal text-gray-500">kcal</span>
+            </p>
           </div>
           <div>
-            <p className="text-xs text-gray-400 uppercase tracking-wide">{isOver ? "Over by" : "Remaining"}</p>
-            <p className={`text-base font-medium ${isOver ? "text-red-500" : "text-emerald-500"}`}>
-              {Math.abs(remaining)} <span className="text-sm font-normal">kcal</span>
+            <p className="text-xs text-gray-400 uppercase tracking-wide">
+              {isOver ? "Over by" : "Remaining"}
+            </p>
+            <p
+              className={`text-base font-medium ${isOver ? "text-red-500" : "text-emerald-500"}`}
+            >
+              {Math.abs(remaining)}{" "}
+              <span className="text-sm font-normal">kcal</span>
             </p>
           </div>
         </div>

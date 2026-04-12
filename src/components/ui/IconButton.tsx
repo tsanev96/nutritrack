@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 type Props = Readonly<{
   children: React.ReactNode;
   onClick?: () => void;
@@ -10,18 +12,20 @@ export default function IconButton({
   children,
   onClick,
   ariaLabel,
-  className = "",
+  className,
   disabled,
 }: Props) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
-      className={`cursor-pointer h-6 w-6 rounded-md m-1.5 text-gray-400 transition-colors hover:text-gray-600 disabled:opacity-40 ${className}`}
+      variant="ghost"
+      size="icon-xs"
+      className={className}
     >
       {children}
-    </button>
+    </Button>
   );
 }

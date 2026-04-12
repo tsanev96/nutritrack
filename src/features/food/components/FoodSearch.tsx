@@ -3,7 +3,7 @@
 import { FoodSuggestion, searchFood } from "@/lib/foodApi";
 import { useState } from "react";
 import ErrorMessage from "@/components/ui/ErrorMessage";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import IconButton from "@/components/ui/IconButton";
 import InputWithButton from "@/components/common/InputWithButton";
 import Span from "@/components/ui/Span";

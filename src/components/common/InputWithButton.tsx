@@ -1,13 +1,13 @@
 "use client";
 
-import Button from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
 
 type ButtonProps = Readonly<{
   label: string;
   onClick: () => void;
   disabled?: boolean;
-  // todo
-  variant?: "primary" | "secondary" | "ghost" | "none";
+  variant?: VariantProps<typeof buttonVariants>["variant"];
   className?: string;
 }>;
 

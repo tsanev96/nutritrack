@@ -3,6 +3,8 @@ import {
   getYesterdayDate,
   formatDateLabel,
   getTomorrowDate,
+  toDate,
+  toDateStr,
 } from "@/utils/dates";
 import { DATE_FORMAT_PATTERN, msDay } from "../constants";
 
@@ -40,6 +42,33 @@ describe("getTomorrowDate", () => {
     const tomorrow = getTomorrowDate();
     const diff = new Date(tomorrow).getTime() - new Date(today).getTime();
     expect(diff).toBe(msDay);
+  });
+});
+
+describe("toDate", () => {
+  it("parses a YYYY-MM-DD string into a Date", () => {
+    const date = toDate("2024-01-15");
+    expect(date).toBeInstanceOf(Date);
+    expect(date.getFullYear()).toBe(2024);
+    expect(date.getMonth()).toBe(0);
+    expect(date.getDate()).toBe(15);
+  });
+
+  it("does not shift the day due to timezone offset", () => {
+    const date = toDate("2024-06-01");
+    expect(date.getDate()).toBe(1);
+  });
+});
+
+describe("toDateStr", () => {
+  it("formats a Date into a YYYY-MM-DD string", () => {
+    const date = new Date("2024-01-15T00:00:00");
+    expect(toDateStr(date)).toBe("2024-01-15");
+  });
+
+  it("round-trips with toDate", () => {
+    const original = "2024-06-15";
+    expect(toDateStr(toDate(original))).toBe(original);
   });
 });
 

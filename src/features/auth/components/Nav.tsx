@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { useAuthUser } from "@/providers/AuthProvider";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 const SECTIONS = [
   {
@@ -67,8 +67,8 @@ export default function Nav() {
             <span className="text-xs text-caption">{user.email}</span>
             <Button
               onClick={() => supabase.auth.signOut()}
-              className="text-xs text-body hover:text-sage transition-colors"
-              variant="none"
+              variant="default"
+              size="sm"
             >
               Sign out
             </Button>

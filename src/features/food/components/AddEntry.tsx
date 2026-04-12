@@ -9,7 +9,7 @@ import { FoodUnit, LIQUID_UNITS, SOLID_UNITS, isLiquid } from "@/utils/units";
 import { calcUnitMacros } from "@/utils/calcUnitMacros";
 import SelectField from "@/components/common/SelectField";
 import InputField from "@/components/common/InputField";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import Headline from "@/components/ui/Headline";
 import Span from "@/components/ui/Span";
 
@@ -132,7 +132,7 @@ export default function AddEntry({ meal, date, onClose }: Props) {
           </Button>
           <Button
             type="button"
-            variant="secondary"
+            variant="outline"
             onClick={onClose}
             className="flex-1"
           >

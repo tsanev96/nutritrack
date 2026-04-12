@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useStore } from "@/stores/useStore";
 import { useShallow } from "zustand/shallow";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import InputField from "@/components/common/InputField";
 import ErrorMessage from "@/components/ui/ErrorMessage";
 
@@ -103,7 +103,7 @@ export default function ExerciseCard({ date }: Props) {
           </div>
           <div className="flex gap-2">
             <Button type="submit">Save</Button>
-            <Button variant="secondary" onClick={() => setShowForm(false)}>
+            <Button variant="outline" onClick={() => setShowForm(false)}>
               Cancel
             </Button>
           </div>
